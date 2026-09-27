@@ -111,5 +111,3 @@ function MonthCalendar({ month, range, hoveredDate, onDayClick, onHover, selecti
     </div>
   );
 }
-
-import { startOfMonth, endOfMonth, startOfDay, endOfDay, isSameDay, differenceInDays, subDays } from 'date-fns';

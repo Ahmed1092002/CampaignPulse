@@ -8,11 +8,12 @@ import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Input';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
-import { formatNumber, formatDate } from '@/lib/utils'.
-import { Calendar, TrendingUp, BarChart3, Users, Eye, Target, ArrowUpRight } from 'lucide-react'.
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell } from 'recharts'.
-import { useTranslations } from 'next-intl'.
-import { cn } from '@/lib/utils'.
+import { formatNumber, formatDate, format, subDays, cn } from '@/lib/utils';
+import { Calendar, TrendingUp, BarChart3, Users, Eye, Target, ArrowUpRight, Globe, Monitor, MapPin, Filter, ChevronDown, GitMerge, FileText, Download } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { OverviewTab, SourcesTab, DevicesTab, GeoTab, FunnelTab } from '@/components/dashboard/AnalyticsTabs';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
+import { DateRangePicker } from '@/components/ui/DateRangePicker';
 
 const COLORS = ['#0ea5e9', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 const DEVICE_COLORS = { desktop: '#0ea5e9', mobile: '#22c55e', tablet: '#f59e0b' };
@@ -164,7 +165,7 @@ export default function AnalyticsPage() {
               onClick={() => setCompareEnabled(!compareEnabled)}
               className="gap-2"
             >
-              <GitCompare className="h-4 w-4" />
+              <GitMerge className="h-4 w-4" />
               {compareEnabled ? 'Compare Enabled' : 'Enable Comparison'}
             </Button>
 
@@ -214,7 +215,7 @@ export default function AnalyticsPage() {
 
         {compareEnabled && compareData && (
           <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 flex items-center gap-3">
-            <GitCompare className="h-5 w-5 text-amber-700" />
+            <GitMerge className="h-5 w-5 text-amber-700" />
             <div>
               <p className="font-medium text-amber-800">Comparison Mode Active</p>
               <p className="text-sm text-amber-700">
@@ -253,8 +254,3 @@ export default function AnalyticsPage() {
     </DashboardLayout>
   );
 }
-
-// ... rest of the components (OverviewTab, SourcesTab, DevicesTab, GeoTab, FunnelTab, StatCard, etc.)
-
-import { useRef } from 'react';
-import { GitCompare, FileText, ChevronUp, TrendingDown, Monitor, MapPin, startOfMonth, endOfMonth, startOfDay, endOfDay, isSameDay, differenceInDays, subDays } from 'date-fns';

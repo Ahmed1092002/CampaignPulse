@@ -277,3 +277,36 @@ model AuditLog {
   @@index([entityType, entityId])
   @@index([createdAt])
 }
+
+model Webhook {
+  id          String   @id @default(uuid())
+  workspaceId String
+  url         String
+  events      String[]
+  secret      String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  deliveries  WebhookDelivery[]
+
+  @@index([workspaceId])
+}
+
+model WebhookDelivery {
+  id        String   @id @default(uuid())
+  webhookId String
+  event     String
+  payload   Json
+  status    String   @default("PENDING")
+  responseCode Int?
+  error     String?
+  createdAt DateTime @default(now())
+
+  webhook   Webhook  @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  @@index([webhookId])
+  @@index([status])
+  @@index([createdAt])
+}

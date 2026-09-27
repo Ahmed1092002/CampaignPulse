@@ -25,6 +25,7 @@ import analyticsRoutes from './modules/analytics/analytics.routes';
 import notificationRoutes from './modules/notifications/notification.routes';
 import auditLogRoutes from './modules/audit-logs/auditLog.routes';
 import emailRoutes from './modules/email/email.routes';
+import webhookRoutes from './modules/webhooks/webhook.routes';
 
 import './modules/jobs/job.workers';
 import { scheduleDailySummaries } from './modules/jobs/job.workers';
@@ -71,6 +72,7 @@ app.use('/api/workspaces/:workspaceId/tracking', trackingRoutes);
 app.use('/api/workspaces/:workspaceId/analytics', analyticsRoutes);
 app.use('/api/workspaces/:workspaceId/notifications', notificationRoutes);
 app.use('/api/workspaces/:workspaceId/audit-logs', auditLogRoutes);
+app.use('/api/workspaces/:workspaceId/webhooks', webhookRoutes);
 app.use('/api/email', emailRoutes);
 
 app.use(notFoundHandler);

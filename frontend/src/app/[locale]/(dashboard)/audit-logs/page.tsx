@@ -1,103 +1,92 @@
 'use client';
 
-import { useState } from 'react'.
-import { useQuery } from '@tanstack/react_query'.
-import { DashboardLayout } from '@/components/layout/DashboardLayout'.
-import { DataTable } from '@/components/ui/DataTable'.
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'.
-import { Input } from '@/components/ui/Input'.
-import { Select } from '@/components/ui/Input'.
-import { Button } from '@/components/ui/Button'.
-import { api } from '@/lib/api'.
-import { useAuthStore } from '@/store/authStore'.
-import { formatDate } from '@/lib/utils'.
-import { Search, Filter, Calendar, Download, Eye } from 'lucide-react'.
-import { useTranslations } from 'next-intl'.
-import { cn } from '@/lib/utils'.
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Input';
+import { Badge } from '@/components/ui/Badge';
+import { api, auditLogApi } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
+import { useTranslations } from 'next-intl';
+import { formatDate, cn } from '@/lib/utils';
+import { Loader2, Search, Filter, ChevronLeft, ChevronRight, Eye, Database, User, Edit, Trash2, Plus } from 'lucide-react';
+
+const ENTITY_TYPES = ['Campaign', 'Lead', 'LandingPage', 'Workspace', 'WorkspaceMember', 'User', 'AuditLog'];
+const ACTIONS = ['CREATED', 'UPDATED', 'DELETED', 'PUBLISHED', 'PAUSED', 'ARCHIVED', 'LOGIN', 'LOGOUT', 'INVITED', 'REMOVED', 'ROLE_CHANGED'];
 
 export default function AuditLogsPage() {
   const { workspaceId } = useAuthStore();
   const t = useTranslations('auditLogs');
-  const [search, setSearch] = useState('');
-  const [entityFilter, setEntityFilter] = useState('');
-  const [actionFilter, setActionFilter] = useState('');
-  const [dateRange, setDateRange] = useState('');
   const [page, setPage] = useState(1);
-  const pageSize = 20.
+  const [limit] = useState(20);
+  const [filters, setFilters] = useState({
+    entityType: '',
+    action: '',
+    userId: '',
+    search: '',
+    startDate: '',
+    endDate: '',
+  });
 
-  const { data: logsData, isLoading } = useQuery({
-    queryKey: ['audit-logs', workspaceId, page, pageSize, search, entityFilter, actionFilter, dateRange],
-    queryFn: () => api.auditLog.getAll(workspaceId!, { 
-      page, 
-      limit: pageSize, 
-      entityType: entityFilter || undefined,
-      action: actionFilter || undefined,
-      search,
-      startDate: getStartDate(dateRange),
-      endDate: new Date().toISOString(),
+  const { data, isLoading } = useQuery({
+    queryKey: ['auditLogs', workspaceId, page, filters],
+    queryFn: () => auditLogApi.getAll(workspaceId!, {
+      page,
+      limit,
+      entityType: filters.entityType || undefined,
+      action: filters.action || undefined,
+      userId: filters.userId || undefined,
+      startDate: filters.startDate || undefined,
+      endDate: filters.endDate || undefined,
     }),
     enabled: !!workspaceId,
   });
 
-  const logs = logsData?.data || [];
-  const total = logsData?.meta?.total || 0.
+  const logs = data?.data?.logs || [];
+  const total = data?.data?.total || 0;
+  const totalPages = Math.ceil(total / limit);
 
-  const getStartDate = (range: string) => {
-    const date = new Date();
-    switch (range) {
-      case '7d': date.setDate(date.getDate() - 7); break;
-      case '30d': date.setDate(date.getDate() - 30); break;
-      case '90d': date.setDate(date.getDate() - 90); break;
-      default: return undefined;
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+    setPage(1);
+  };
+
+  const getActionColor = (action: string) => {
+    if (action.includes('CREATED') || action.includes('PUBLISHED')) return 'bg-green-500/10 text-green-700';
+    if (action.includes('UPDATED') || action.includes('ROLE_CHANGED')) return 'bg-blue-500/10 text-blue-700';
+    if (action.includes('DELETED') || action.includes('REMOVED') || action.includes('ARCHIVED')) return 'bg-red-500/10 text-red-700';
+    if (action.includes('PAUSED')) return 'bg-amber-500/10 text-amber-700';
+    return 'bg-gray-500/10 text-gray-700';
+  };
+
+  const getEntityIcon = (entityType: string) => {
+    switch (entityType) {
+      case 'Campaign': return <Database className="h-4 w-4" />;
+      case 'Lead': return <User className="h-4 w-4" />;
+      case 'LandingPage': return <Eye className="h-4 w-4" />;
+      case 'Workspace': return <Database className="h-4 w-4" />;
+      case 'WorkspaceMember': return <User className="h-4 w-4" />;
+      default: return <Database className="h-4 w-4" />;
     }
-    return date.toISOString();
   };
 
-  const columns = [
-    {
-      key: 'timestamp',
-      header: t('timestamp'),
-      sortable: true,
-      render: (row: any) => formatDate(row.createdAt, 'en-US', { dateStyle: 'short', timeStyle: 'short' }),
-    },
-    {
-      key: 'entityType',
-      header: t('entityType'),
-      sortable: true,
-      render: (row: any) => row.entityType,
-    },
-    {
-      key: 'action',
-      header: t('action'),
-      sortable: true,
-      render: (row: any) => (
-        <span className="font-medium capitalize">{row.action.toLowerCase().replace(/_/g, ' ')}</span>
-      ),
-    },
-    {
-      key: 'user',
-      header: t('user'),
-      render: (row: any) => row.user ? `${row.user.firstName} ${row.user.lastName}` : 'System',
-    },
-    {
-      key: 'entityId',
-      header: t('entityId'),
-      render: (row: any) => <code className="text-xs">{row.entityId.slice(0, 8)}...</code>,
-    },
-    {
-      key: 'details',
-      header: '',
-      render: (row: any) => (
-        <Button variant="ghost" size="sm" onClick={() => viewDetails(row)}>
-          <Eye className="h-4 w-4" />
-        </Button>
-      ),
-    },
-  ];
-
-  const viewDetails = (log: any) => {
-    alert(JSON.stringify({ oldData: log.oldData, newData: log.newData }, null, 2));
-  };
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="animate-pulse space-y-6">
+          <div className="h-8 bg-muted rounded w-1/4" />
+          <div className="space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Card key={i}><CardContent className="p-6 h-20 bg-muted" /></Card>
+            ))}
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -105,88 +94,132 @@ export default function AuditLogsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
-            <p className="text-muted-foreground mt-1">Track all changes in your workspace</p>
+            <p className="text-muted-foreground mt-1">Track all important actions across your workspace</p>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={t('search') || 'Search...'}
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="pl-10"
-            />
-          </div>
-          <Select
-            value={entityFilter}
-            onChange={(e) => { setEntityFilter(e.target.value); setPage(1); }}
-            options={[
-              { value: '', label: t('filterByEntity') },
-              { value: 'Workspace', label: 'Workspace' },
-              { value: 'Campaign', label: 'Campaign' },
-              { value: 'LandingPage', label: 'Landing Page' },
-              { value: 'Lead', label: 'Lead' },
-              { value: 'WorkspaceMember', label: 'Team Member' },
-              { value: 'CampaignSource', label: 'UTM Source' },
-            ]}
-            className="w-full sm:w-48"
-          />
-          <Select
-            value={actionFilter}
-            onChange={(e) => { setActionFilter(e.target.value); setPage(1); }}
-            options={[
-              { value: '', label: t('filterByAction') },
-              { value: 'CREATED', label: 'Created' },
-              { value: 'UPDATED', label: 'Updated' },
-              { value: 'PUBLISHED', label: 'Published' },
-              { value: 'PAUSED', label: 'Paused' },
-              { value: 'ARCHIVED', label: 'Archived' },
-              { value: 'DELETED', label: 'Deleted' },
-              { value: 'INVITED', label: 'Invited' },
-              { value: 'REMOVED', label: 'Removed' },
-              { value: 'ROLE_CHANGED', label: 'Role Changed' },
-              { value: 'STATUS_CHANGED', label: 'Status Changed' },
-            ]}
-            className="w-full sm:w-48"
-          />
-          <Select
-            value={dateRange}
-            onChange={(e) => { setDateRange(e.target.value); setPage(1); }}
-            options={[
-              { value: '', label: 'All Time' },
-              { value: '7d', label: 'Last 7 Days' },
-              { value: '30d', label: 'Last 30 Days' },
-              { value: '90d', label: 'Last 90 Days' },
-            ]}
-            className="w-full sm:w-40"
-          />
-        </div>
-
-        <DataTable
-          columns={columns}
-          data={logs}
-          keyExtractor={(row) => row.id}
-          isLoading={isLoading}
-          emptyMessage={t('noLogs')}
-        />
-
-        {total > pageSize && (
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
-              Showing {((page - 1) * pageSize) + 1} to {Math.min(page * pageSize, total)} of {total} results
-            </p>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
-                Previous
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => setPage(p => p + 1)} disabled={page * pageSize >= total}>
-                Next
+        <Card>
+          <CardHeader>
+            <CardTitle>Filters</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder={t('searchPlaceholder') || 'Search...'}
+                  value={filters.search}
+                  onChange={(e) => handleFilterChange('search', e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Select
+                value={filters.entityType}
+                onChange={(e) => handleFilterChange('entityType', e.target.value)}
+                options={[
+                  { value: '', label: t('filterByEntity') || 'All Entities' },
+                  ...ENTITY_TYPES.map(t => ({ value: t, label: t })),
+                ]}
+              />
+              <Select
+                value={filters.action}
+                onChange={(e) => handleFilterChange('action', e.target.value)}
+                options={[
+                  { value: '', label: t('filterByAction') || 'All Actions' },
+                  ...ACTIONS.map(a => ({ value: a, label: a })),
+                ]}
+              />
+              <Input
+                type="date"
+                value={filters.startDate}
+                onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                placeholder="Start Date"
+              />
+              <Input
+                type="date"
+                value={filters.endDate}
+                onChange={(e) => handleFilterChange('endDate', e.target.value)}
+                placeholder="End Date"
+              />
+              <Button variant="outline" onClick={() => setFilters({ entityType: '', action: '', userId: '', search: '', startDate: '', endDate: '' })}>
+                <Filter className="h-4 w-4 mr-2" />
+                Clear
               </Button>
             </div>
-          </div>
-        )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="p-4 text-left text-sm font-medium text-muted-foreground">{t('timestamp')}</th>
+                    <th className="p-4 text-left text-sm font-medium text-muted-foreground">{t('entityType')}</th>
+                    <th className="p-4 text-left text-sm font-medium text-muted-foreground">{t('entityId')}</th>
+                    <th className="p-4 text-left text-sm font-medium text-muted-foreground">{t('action')}</th>
+                    <th className="p-4 text-left text-sm font-medium text-muted-foreground">{t('user')}</th>
+                    <th className="p-4 text-left text-sm font-medium text-muted-foreground">{t('ipAddress')}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {logs.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="p-12 text-center text-muted-foreground">{t('noLogs')}</td>
+                    </tr>
+                  ) : (
+                    logs.map((log: any) => (
+                      <tr key={log.id} className="hover:bg-muted/50">
+                        <td className="p-4 text-sm whitespace-nowrap">{formatDate(log.createdAt, undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+                        <td className="p-4 text-sm">
+                          <div className="flex items-center gap-2">
+                            {getEntityIcon(log.entityType)}
+                            <span className="font-medium">{log.entityType}</span>
+                          </div>
+                        </td>
+                        <td className="p-4 text-sm font-mono text-muted-foreground">{log.entityId}</td>
+                        <td className="p-4 text-sm">
+                          <Badge className={cn(getActionColor(log.action), 'text-capitalize')}>
+                            {log.action.replace(/_/g, ' ')}
+                          </Badge>
+                        </td>
+                        <td className="p-4 text-sm">{log.user?.email || 'System'}</td>
+                        <td className="p-4 text-sm text-muted-foreground font-mono">{log.ipAddress || '-'}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between p-4 border-t">
+                <p className="text-sm text-muted-foreground">
+                  Page {page} of {totalPages} ({total} total)
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );

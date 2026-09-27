@@ -10,9 +10,9 @@ import { Textarea } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Input';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge'.
-import { api } from '@/lib/api'.
-import { useTranslations } from 'next-intl'.
-import { cn } from '@/lib/utils'.
+import { api, trackingApi } from '@/lib/api';
+import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner'.
 import { Loader2, CheckCircle, MessageSquare, Star, Zap, Shield, Target, ArrowRight, X } from 'lucide-react'.
 import { QrCodeModal } from './QrCodeModal'.
@@ -99,7 +99,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
 
   const trackEvent = async (type: string) => {
     try {
-      await api.tracking.trackEvent(campaign.workspace.id, {
+      await trackingApi.trackEvent(campaign.workspace.id, {
         campaignId: campaign.id,
         type: type as any,
         sessionId: getSessionId(),
