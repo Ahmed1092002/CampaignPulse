@@ -1,6 +1,8 @@
 import prisma from '../../config/prisma';
 import { NotFoundError, AuthorizationError } from '../../utils/errors';
 import { NotificationType } from '@prisma/client';
+import { emailService } from '../email/email.service';
+import env from '../../config/env';
 
 export async function createNotification(data: {
   userId: string;
@@ -9,8 +11,11 @@ export async function createNotification(data: {
   title: string;
   message: string;
   data?: Record<string, unknown>;
+  sendEmail?: boolean;
+  emailTemplate?: string;
+  emailTemplateData?: Record<string, unknown>;
 }) {
-  return prisma.notification.create({
+  const notification = await prisma.notification.create({
     data: {
       userId: data.userId,
       workspaceId: data.workspaceId,
@@ -20,6 +25,28 @@ export async function createNotification(data: {
       data: data.data || {},
     },
   });
+
+  // Send email if requested and user has email notifications enabled
+  if (data.sendEmail && data.emailTemplate) {
+    const user = await prisma.user.findUnique({
+      where: { id: data.userId },
+      select: { email: true, firstName: true, lastName: true },
+    });
+
+    if (user?.email) {
+      await emailService.send({
+        to: user.email,
+        template: data.emailTemplate,
+        templateData: {
+          ...data.emailTemplateData,
+          userName: `${user.firstName} ${user.lastName}`,
+          dashboardUrl: `${env.FRONTEND_URL}/dashboard`,
+        },
+      }).catch(err => console.error('Failed to send notification email:', err));
+    }
+  }
+
+  return notification;
 }
 
 export async function createBulkNotifications(notifications: Array<{
@@ -29,10 +56,13 @@ export async function createBulkNotifications(notifications: Array<{
   title: string;
   message: string;
   data?: Record<string, unknown>;
+  sendEmail?: boolean;
+  emailTemplate?: string;
+  emailTemplateData?: Record<string, unknown>;
 }>) {
   if (notifications.length === 0) return [];
 
-  return prisma.notification.createMany({
+  const created = await prisma.notification.createMany({
     data: notifications.map(n => ({
       userId: n.userId,
       workspaceId: n.workspaceId,
@@ -42,6 +72,30 @@ export async function createBulkNotifications(notifications: Array<{
       data: n.data || {},
     })),
   });
+
+  // Send emails for notifications that request it
+  for (const notification of notifications) {
+    if (notification.sendEmail && notification.emailTemplate) {
+      const user = await prisma.user.findUnique({
+        where: { id: notification.userId },
+        select: { email: true, firstName: true, lastName: true },
+      });
+
+      if (user?.email) {
+        await emailService.send({
+          to: user.email,
+          template: notification.emailTemplate,
+          templateData: {
+            ...notification.emailTemplateData,
+            userName: `${user.firstName} ${user.lastName}`,
+            dashboardUrl: `${env.FRONTEND_URL}/dashboard`,
+          },
+        }).catch(err => console.error('Failed to send bulk notification email:', err));
+      }
+    }
+  }
+
+  return created;
 }
 
 export async function getNotifications(userId: string, workspaceId: string, params: {

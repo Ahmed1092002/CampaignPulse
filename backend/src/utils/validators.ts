@@ -180,3 +180,16 @@ export const changePasswordSchema = z.object({
     newPassword: z.string().min(8).max(128),
   }),
 });
+
+export const forgotPasswordSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+  }),
+});
+
+export const resetPasswordSchema = z.object({
+  body: z.object({
+    token: z.string().min(1),
+    newPassword: z.string().min(8).max(128),
+  }),
+});

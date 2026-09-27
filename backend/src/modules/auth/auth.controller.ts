@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { loginSchema, registerSchema, refreshTokenSchema, changePasswordSchema } from '../../utils/validators';
+import { loginSchema, registerSchema, refreshTokenSchema, changePasswordSchema, forgotPasswordSchema, resetPasswordSchema, verifyResetTokenSchema } from '../../utils/validators';
 import * as authService from './auth.service';
 import { successResponse } from '../../utils/helpers';
 import { AuthenticationError } from '../../utils/errors';
@@ -53,9 +53,31 @@ export async function changePassword(req: AuthenticatedRequest, res: Response) {
   res.json(successResponse({ message: 'Password changed successfully' }));
 }
 
+export async function forgotPassword(req: AuthenticatedRequest, res: Response) {
+  const { email } = req.body;
+  await authService.forgotPassword(email);
+  // Always return success to prevent email enumeration
+  res.json(successResponse({ message: 'If the email exists, a reset link has been sent' }));
+}
+
+export async function resetPassword(req: AuthenticatedRequest, res: Response) {
+  const { token, newPassword } = req.body;
+  await authService.resetPassword(token, newPassword);
+  res.json(successResponse({ message: 'Password has been reset successfully' }));
+}
+
+export async function verifyResetToken(req: AuthenticatedRequest, res: Response) {
+  const { token } = req.body;
+  await authService.verifyResetToken(token);
+  res.json(successResponse({ valid: true }));
+}
+
 export const authValidators = {
   register: registerSchema,
   login: loginSchema,
   refresh: refreshTokenSchema,
   changePassword: changePasswordSchema,
+  forgotPassword: forgotPasswordSchema,
+  resetPassword: resetPasswordSchema,
+  verifyResetToken: verifyResetTokenSchema,
 };

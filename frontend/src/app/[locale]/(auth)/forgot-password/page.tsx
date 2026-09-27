@@ -1,0 +1,108 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useMutation } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { api } from '@/lib/api';
+import { Loader2, Mail, AlertCircle, CheckCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
+type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
+
+export default function ForgotPasswordPage() {
+  const router = useRouter();
+  const t = useTranslations('auth');
+  const [step, setStep] = useState<'request' | 'sent'>('request');
+
+  const form = useForm<ForgotPasswordData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: '' },
+  });
+
+  const forgotMutation = useMutation({
+    mutationFn: (data: ForgotPasswordData) => api.auth.forgotPassword(data.email),
+    onSuccess: () => {
+      setStep('sent');
+      toast.success(t('resetEmailSent') || 'If the email exists, a reset link has been sent');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.error?.message || t('error'));
+    },
+  });
+
+  const handleSubmit = (data: ForgotPasswordData) => {
+    forgotMutation.mutate(data);
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+            {step === 'request' ? <Mail className="h-6 w-6 text-primary" /> : <CheckCircle className="h-6 w-6 text-green-500" />}
+          </div>
+          <CardTitle>{step === 'request' ? t('forgotPassword') : t('checkEmail')}</CardTitle>
+          <CardDescription>
+            {step === 'request'
+              ? t('forgotPasswordSubtitle') || 'Enter your email to receive a password reset link'
+              : t('resetEmailSentDesc') || 'We\'ve sent a password reset link to your email'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {step === 'request' ? (
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+              <Input
+                label={t('email')}
+                type="email"
+                placeholder="you@example.com"
+                {...form.register('email')}
+                error={form.formState.errors.email?.message}
+                leftIcon={<Mail className="h-4 w-4" />}
+              />
+              <Button type="submit" className="w-full" disabled={forgotMutation.isPending}>
+                {forgotMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                {t('sendResetLink') || 'Send Reset Link'}
+              </Button>
+            </form>
+          ) : (
+            <div className="space-y-4 text-center">
+              <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                <p className="font-medium">{t('checkYourInbox')}</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {t('resetLinkSentTo')} {form.watch('email')}
+                </p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {t('didntReceiveEmail') || "Didn't receive the email?"}
+              </p>
+              <Button variant="outline" className="w-full" onClick={() => setStep('request')}>
+                {t('resendEmail') || 'Resend Email'}
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                {t('rememberPassword') || 'Remember your password?'} {' '}
+                <Link href="/login" className="text-primary hover:underline">
+                  {t('signIn') || 'Sign in'}
+                </Link>
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+import { useState } from 'react';

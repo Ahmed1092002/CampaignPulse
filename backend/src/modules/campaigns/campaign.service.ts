@@ -4,6 +4,8 @@ import { AuditActions, createAuditLog } from '../audit-logs/auditLog.service';
 import { CreateCampaignInput, UpdateCampaignInput } from '../../types';
 import { CampaignStatus, UserRole } from '@prisma/client';
 import { slugify } from '../../utils/helpers';
+import { emailService } from '../email/email.service';
+import env from '../../config/env';
 
 export async function createCampaign(workspaceId: string, userId: string, input: CreateCampaignInput) {
   const membership = await prisma.workspaceMember.findUnique({
@@ -164,6 +166,27 @@ export async function updateCampaign(workspaceId: string, userId: string, campai
     oldData: { name: oldData.name, status: oldData.status, description: oldData.description },
     newData: { name: updated.name, status: updated.status, description: updated.description },
   });
+
+  // Send campaign published email notification
+  if (input.status === CampaignStatus.PUBLISHED && oldData.status !== CampaignStatus.PUBLISHED) {
+    const adminsAndMarketers = await prisma.workspaceMember.findMany({
+      where: { workspaceId, role: { in: ['ADMIN', 'MARKETER'] } },
+      include: { user: { select: { email: true, firstName: true, lastName: true } } },
+    });
+
+    const publicUrl = `${env.FRONTEND_URL}/p/${updated.slug}`;
+
+    for (const member of adminsAndMarketers) {
+      await emailService.send({
+        to: member.user.email,
+        template: 'campaign_published',
+        templateData: {
+          campaignName: updated.name,
+          publicUrl,
+        },
+      }).catch(err => console.error('Failed to send campaign published email:', err));
+    }
+  }
 
   return updated;
 }

@@ -1,9 +1,12 @@
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import prisma from '../../config/prisma';
 import { generateTokenPair, verifyRefreshToken } from '../../utils/jwt';
 import { AuthenticationError, ConflictError, NotFoundError } from '../../utils/errors';
 import { AuditActions, createAuditLog } from '../audit-logs/auditLog.service';
 import { JwtPayload } from '../../types';
+import { emailService } from '../email/email.service';
+import env from '../../config/env';
 
 export interface RegisterInput {
   email: string;
@@ -202,4 +205,72 @@ export async function updateProfile(userId: string, data: { firstName?: string; 
   });
 
   return user;
+}
+
+export async function forgotPassword(email: string): Promise<void> {
+  const user = await prisma.user.findUnique({ where: { email } });
+  
+  // Always return success to prevent email enumeration
+  if (!user) return;
+
+  // Generate reset token (valid for 1 hour)
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      resetToken,
+      resetTokenExpiry,
+    },
+  );
+
+  const resetUrl = `${env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+  await emailService.send({
+    to: user.email,
+    template: 'password_reset',
+    templateData: {
+      resetUrl,
+    },
+  }).catch(err => console.error('Failed to send password reset email:', err));
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
+  const user = await prisma.user.findFirst({
+    where: {
+      resetToken: token,
+      resetTokenExpiry: { gt: new Date() },
+    },
+  });
+
+  if (!user) {
+    throw new AuthenticationError('Invalid or expired reset token');
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      passwordHash,
+      resetToken: null,
+      resetTokenExpiry: null,
+    },
+  });
+}
+
+export async function verifyResetToken(token: string): Promise<boolean> {
+  const user = await prisma.user.findFirst({
+    where: {
+      resetToken: token,
+      resetTokenExpiry: { gt: new Date() },
+    },
+  });
+
+  if (!user) {
+    throw new AuthenticationError('Invalid or expired reset token');
+  }
+
+  return true;
 }

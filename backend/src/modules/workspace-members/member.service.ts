@@ -3,6 +3,8 @@ import { NotFoundError, ConflictError, AuthorizationError } from '../../utils/er
 import { AuditActions, createAuditLog } from '../audit-logs/auditLog.service';
 import { InviteMemberInput, UpdateMemberRoleInput } from '../../types';
 import { UserRole } from '@prisma/client';
+import { emailService } from '../email/email.service';
+import env from '../../config/env';
 
 export async function inviteMember(workspaceId: string, userId: string, input: InviteMemberInput) {
   const membership = await prisma.workspaceMember.findUnique({
@@ -26,6 +28,16 @@ export async function inviteMember(workspaceId: string, userId: string, input: I
     throw new ConflictError('User is already a member of this workspace');
   }
 
+  const inviter = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { firstName: true, lastName: true },
+  });
+
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { name: true },
+  });
+
   const member = await prisma.workspaceMember.create({
     data: {
       userId: invitedUser.id,
@@ -45,6 +57,19 @@ export async function inviteMember(workspaceId: string, userId: string, input: I
     action: AuditActions.MEMBER_INVITED,
     newData: { email: invitedUser.email, role: input.role },
   });
+
+  // Send invitation email
+  const inviteUrl = `${env.FRONTEND_URL}/invite/${member.id}`; // You may want to create a proper invite token system
+  await emailService.send({
+    to: invitedUser.email,
+    template: 'member_invited',
+    templateData: {
+      workspaceName: workspace?.name || 'Workspace',
+      inviterName: `${inviter?.firstName} ${inviter?.lastName}`,
+      role: input.role,
+      inviteUrl,
+    },
+  }).catch(err => console.error('Failed to send invitation email:', err));
 
   return member;
 }

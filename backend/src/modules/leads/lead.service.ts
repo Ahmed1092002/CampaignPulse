@@ -5,6 +5,8 @@ import { AuditActions, createAuditLog } from '../audit-logs/auditLog.service';
 import { CreateLeadInput, UpdateLeadInput, LeadStatus } from '../../types';
 import { UserRole } from '@prisma/client';
 import { calculateConversionRate } from '../../utils/helpers';
+import { emailService } from '../email/email.service';
+import env from '../../config/env';
 
 export async function createLead(workspaceId: string, input: CreateLeadInput, metadata?: { ipAddress?: string; userAgent?: string; referrer?: string }) {
   const campaign = await prisma.campaign.findFirst({
@@ -100,7 +102,33 @@ export async function createLead(workspaceId: string, input: CreateLeadInput, me
     userAgent: input.userAgent,
   });
 
+  // Send new lead notification email to workspace admins/marketers
+  const adminsAndMarketers = await prisma.workspaceMember.findMany({
+    where: { workspaceId, role: { in: ['ADMIN', 'MARKETER'] } },
+    include: { user: { select: { email: true, firstName: true, lastName: true } } },
+  });
+
+  const leadUrl = `${env.FRONTEND_URL}/leads/${lead.id}`;
+  const source = input.utmSource && input.utmMedium ? `${input.utmSource}/${input.utmMedium}` : 'Direct';
+
+  for (const member of adminsAndMarketers) {
+    await emailService.send({
+      to: member.user.email,
+      template: 'new_lead',
+      templateData: {
+        leadName: `${lead.firstName} ${lead.lastName}`,
+        leadEmail: lead.email,
+        leadPhone: lead.phone || undefined,
+        campaignName: campaign.name,
+        source,
+        timestamp: lead.createdAt.toISOString(),
+        leadUrl,
+      },
+    }).catch(err => console.error('Failed to send new lead email:', err));
+  }
+
   return { lead, isDuplicate: false };
+}
 }
 
 export async function getLeads(workspaceId: string, userId: string, params: {
@@ -219,6 +247,34 @@ export async function updateLead(workspaceId: string, userId: string, leadId: st
       oldData: { status: oldStatus },
       newData: { status: input.status },
     });
+
+    // Send lead status change notification
+    const adminsAndMarketers = await prisma.workspaceMember.findMany({
+      where: { workspaceId, role: { in: ['ADMIN', 'MARKETER'] } },
+      include: { user: { select: { email: true, firstName: true, lastName: true } } },
+    });
+
+    const campaign = await prisma.campaign.findUnique({
+      where: { id: lead.campaignId },
+      select: { name: true },
+    });
+
+    const leadUrl = `${env.FRONTEND_URL}/leads/${leadId}`;
+
+    for (const member of adminsAndMarketers) {
+      await emailService.send({
+        to: member.user.email,
+        template: 'lead_status_changed',
+        templateData: {
+          leadName: `${lead.firstName} ${lead.lastName}`,
+          leadEmail: lead.email,
+          campaignName: campaign?.name || 'Campaign',
+          oldStatus,
+          newStatus: input.status,
+          leadUrl,
+        },
+      }).catch(err => console.error('Failed to send lead status change email:', err));
+    }
   }
 
   return updated;

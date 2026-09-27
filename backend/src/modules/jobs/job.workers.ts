@@ -5,7 +5,9 @@ import logger from '../../config/logger';
 import * as notificationService from '../notifications/notification.service';
 import * as leadService from '../leads/lead.service';
 import * as analyticsService from '../analytics/analytics.service';
+import { emailService } from '../email/email.service';
 import { NotificationType, LeadStatus } from '@prisma/client';
+import env from '../../config/env';
 
 const analyticsQueue = new Queue('analytics', { connection: redis });
 const notificationQueue = new Queue('notifications', { connection: redis });
@@ -93,6 +95,15 @@ new Worker('summaries', async (job: Job) => {
       select: { id: true },
     });
 
+    const workspace = await prisma.workspace.findUnique({
+      where: { id: workspaceId },
+      select: { name: true },
+    });
+
+    let totalVisits = 0;
+    let totalLeads = 0;
+    let totalNewLeads = 0;
+
     for (const campaign of campaigns) {
       const stats = await analyticsService.getDashboardStats(workspaceId, 'system', {
         campaignId: campaign.id,
@@ -100,8 +111,36 @@ new Worker('summaries', async (job: Job) => {
         endDate: nextDay,
       });
 
+      totalVisits += stats.totalVisits;
+      totalLeads += stats.totalLeads;
+      totalNewLeads += stats.totalLeads; // For daily, all leads are "new"
+
       // Store or send summary (could be emailed, stored in DB, etc.)
       logger.info('Daily summary generated', { workspaceId, campaignId: campaign.id, stats });
+    }
+
+    const conversionRate = totalVisits > 0 ? (totalLeads / totalVisits) * 100 : 0;
+
+    // Send daily summary email to workspace admins
+    const admins = await prisma.workspaceMember.findMany({
+      where: { workspaceId, role: 'ADMIN' },
+      include: { user: { select: { email: true, firstName: true, lastName: true } } },
+    });
+
+    for (const admin of admins) {
+      await emailService.send({
+        to: admin.user.email,
+        template: 'daily_summary',
+        templateData: {
+          workspaceName: workspace?.name || 'Workspace',
+          date: targetDate.toLocaleDateString(),
+          visits: totalVisits,
+          leads: totalLeads,
+          conversionRate,
+          newLeads: totalNewLeads,
+          dashboardUrl: `${env.FRONTEND_URL}/dashboard`,
+        },
+      }).catch(err => console.error('Failed to send daily summary email:', err));
     }
   } catch (error) {
     logger.error('Summary worker error', { error, jobId: job.id });
