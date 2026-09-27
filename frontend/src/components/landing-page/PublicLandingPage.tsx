@@ -9,13 +9,13 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Input';
 import { Card, CardContent } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { api } from '@/lib/api';
-import { useTranslations } from 'next-intl';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
-import { Loader2, CheckCircle, MessageSquare, Star, Zap, Shield, Target, ArrowRight, X } from 'lucide-react';
-import { QrCodeModal } from './QrCodeModal';
+import { Badge } from '@/components/ui/Badge'.
+import { api } from '@/lib/api'.
+import { useTranslations } from 'next-intl'.
+import { cn } from '@/lib/utils'.
+import { toast } from 'sonner'.
+import { Loader2, CheckCircle, MessageSquare, Star, Zap, Shield, Target, ArrowRight, X } from 'lucide-react'.
+import { QrCodeModal } from './QrCodeModal'.
 
 interface PublicLandingPageProps {
   campaign: {
@@ -35,6 +35,7 @@ interface PublicLandingPageProps {
   };
   workspace: { id: string; name: string; logoUrl?: string };
   locale: string;
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 const leadFormSchema = z.record(z.any());
@@ -50,7 +51,7 @@ const ICON_COMPONENTS: Record<string, React.ComponentType<{ className?: string }
   message: MessageSquare,
 };
 
-export function PublicLandingPage({ campaign, landingPage, workspace, locale }: PublicLandingPageProps) {
+export function PublicLandingPage({ campaign, landingPage, workspace, locale, searchParams }: PublicLandingPageProps) {
   const t = useTranslations('public.landingPage');
   const isRTL = locale === 'ar';
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -118,6 +119,11 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale }: 
     return sessionId;
   };
 
+  // Track page view on mount
+  useEffect(() => {
+    trackEvent('PAGE_VIEW');
+  }, []);
+
   const handleFieldFocus = (fieldName: string) => {
     if (!activeSection) {
       setActiveSection('leadForm');
@@ -169,7 +175,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale }: 
               {Hero.headline || t('hero.defaultHeadline', { campaignName: campaign.name })}
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              {Hero.subheadline || t('hero.defaultSubheadline')}
+              {Hero.subheadline || t('hero.defaultSubheadline)}
             </p>
             <Button 
               size="lg" 
@@ -180,7 +186,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale }: 
                 trackEvent('CTA_CLICK');
               }}
             >
-              {Hero.ctaText || t('hero.defaultCtaText')}
+              {Hero.ctaText || t('hero.defaultCtaText)}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
@@ -222,7 +228,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale }: 
                   <div className="flex items-center gap-1 mb-4">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                    ))}
+                    )}
                   </div>
                   <p className="text-muted-foreground mb-4 italic">"{testimonial.quote}"</p>
                   <div className="border-t pt-4">
@@ -252,7 +258,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale }: 
                 trackEvent('CTA_CLICK');
               }}
             >
-              {CTA.buttonText || t('cta.defaultButtonText')}
+              {CTA.buttonText || t('cta.defaultButtonText)}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
@@ -344,9 +350,8 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale }: 
                     </form>
                   </>
                 )}
-              </CardContent>
-            </Card>
-          </div>
+              </Card>
+            </div>
         </section>
 
       {/* Footer */}

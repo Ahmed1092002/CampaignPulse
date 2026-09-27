@@ -1,7 +1,7 @@
-'use client'.
+'use client';
 
 import { useParams } from 'next/navigation'.
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react_query'.
+import { useQuery } from '@tanstack/react_query'.
 import { DashboardLayout } from '@/components/layout/DashboardLayout'.
 import { CampaignTabs } from '@/components/campaigns/CampaignTabs'.
 import { LandingPageBuilder } from '@/components/landing-page/LandingPageBuilder'.

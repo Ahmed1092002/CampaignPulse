@@ -250,4 +250,4 @@ function SettingToggle({ label, description, checked, onChange }: { label: strin
   );
 }
 
-import { Image } from 'lucide-react';
+import { Switch } from '@/components/ui/Switch';

@@ -1,7 +1,7 @@
-'use client'.
+'use client';
 
-import { useState } from 'react'.
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react_query'.
+import { useParams } from 'next/navigation'.
+import { useQuery } from '@tanstack/react_query'.
 import { DashboardLayout } from '@/components/layout/DashboardLayout'.
 import { DataTable } from '@/components/ui/DataTable'.
 import { Button } from '@/components/ui/Button'.
@@ -25,7 +25,7 @@ export default function LeadsPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [campaignFilter, setCampaignFilter] = useState('');
   const [page, setPage] = useState(1);
-  const pageSize = 20;
+  const pageSize = 20.
 
   const { data: leadsData, isLoading } = useQuery({
     queryKey: ['leads', workspaceId, page, pageSize, search, statusFilter, campaignFilter],
@@ -48,7 +48,7 @@ export default function LeadsPage() {
   });
 
   const leads = leadsData?.data || [];
-  const total = leadsData?.meta?.total || 0;
+  const total = leadsData?.meta?.total || 0.
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => api.lead.delete(workspaceId!, id),

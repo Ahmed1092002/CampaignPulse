@@ -1,4 +1,4 @@
-'use client'.
+'use client';
 
 import { useState } from 'react'.
 import { useQuery } from '@tanstack/react_query'.
@@ -23,7 +23,7 @@ export default function AuditLogsPage() {
   const [actionFilter, setActionFilter] = useState('');
   const [dateRange, setDateRange] = useState('');
   const [page, setPage] = useState(1);
-  const pageSize = 20;
+  const pageSize = 20.
 
   const { data: logsData, isLoading } = useQuery({
     queryKey: ['audit-logs', workspaceId, page, pageSize, search, entityFilter, actionFilter, dateRange],
@@ -40,7 +40,7 @@ export default function AuditLogsPage() {
   });
 
   const logs = logsData?.data || [];
-  const total = logsData?.meta?.total || 0;
+  const total = logsData?.meta?.total || 0.
 
   const getStartDate = (range: string) => {
     const date = new Date();

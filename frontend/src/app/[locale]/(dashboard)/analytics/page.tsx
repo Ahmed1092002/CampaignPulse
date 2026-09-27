@@ -1,13 +1,13 @@
-'use client'.
+'use client';
 
-import { useState } from 'react'.
-import { useQuery } from '@tanstack/react_query'.
-import { DashboardLayout } from '@/components/layout/DashboardLayout'.
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'.
-import { Button } from '@/components/ui/Button'.
-import { Select } from '@/components/ui/Input'.
-import { api } from '@/lib/api'.
-import { useAuthStore } from '@/store/authStore'.
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Select } from '@/components/ui/Input';
+import { api } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
 import { formatNumber, formatDate } from '@/lib/utils'.
 import { Calendar, TrendingUp, BarChart3, Users, Eye, Target, ArrowUpRight } from 'lucide-react'.
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell } from 'recharts'.
@@ -101,7 +101,7 @@ export default function AnalyticsPage() {
           <div className="grid gap-4 md:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Card key={i}><CardContent className="p-6 h-24 bg-muted" /></Card>
-            ))}
+            })}
           </div>
         </div>
       </DashboardLayout>

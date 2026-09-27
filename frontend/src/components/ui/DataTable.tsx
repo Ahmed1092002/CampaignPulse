@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useMemo, useState } from 'react';
+import { Fragment, ReactNode, useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ChevronUp, ChevronDown, ChevronsUpDown, MoreHorizontal } from 'lucide-react';
 import { Button } from './Button';
@@ -257,7 +257,7 @@ export function DataTable<T>({
             </Button>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

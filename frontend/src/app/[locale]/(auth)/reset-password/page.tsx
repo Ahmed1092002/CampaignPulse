@@ -1,4 +1,4 @@
-'use client'.
+'use client';
 
 import { useState, useEffect } from 'react'.
 import { useRouter, useSearchParams } from 'next/navigation'.
@@ -124,9 +124,7 @@ export default function ResetPasswordPage() {
               <CheckCircle className="h-6 w-6 text-green-500" />
             </div>
             <CardTitle>{t('passwordResetSuccess') || 'Password reset successful!'}</CardTitle>
-            <CardDescription>
-              {t('passwordResetSuccessDesc') || 'Your password has been updated. You can now sign in with your new password.'}
-            </CardDescription>
+            <CardDescription>{t('passwordResetSuccessDesc') || 'Your password has been updated. You can now sign in with your new password.'}</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/login">
@@ -157,18 +155,18 @@ export default function ResetPasswordPage() {
         <CardContent>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <Input
-              label={t('newPassword')}
+              label={t('newPassword)}
               type="password"
               placeholder="••••••••"
-              {...form.register('password')}
+              {...form.register('password)}
               error={form.formState.errors.password?.message}
               leftIcon={<Lock className="h-4 w-4" />}
             />
             <Input
-              label={t('confirmPassword')}
+              label={t('confirmPassword)}
               type="password"
               placeholder="••••••••"
-              {...form.register('confirmPassword')}
+              {...form.register('confirmPassword)}
               error={form.formState.errors.confirmPassword?.message}
               leftIcon={<Lock className="h-4 w-4" />}
             />
@@ -189,7 +187,7 @@ export default function ResetPasswordPage() {
 
           <Button variant="outline" className="w-full" onClick={() => router.push('/login')}>
             <Mail className="h-4 w-4 mr-2" />
-            {t('hasAccount')} {t('signIn')}
+            {t('hasAccount)} {t('signIn)}
           </Button>
         </CardContent>
       </Card>

@@ -1,7 +1,8 @@
-'use client'.
+'use client';
 
 import { useState } from 'react'.
-import { useRouter, useSearchParams } from 'next/navigation'.
+import { useRouter } from 'next/navigation'.
+import Link from 'next/link'.
 import { useForm } from 'react-hook-form'.
 import { zodResolver } from '@hookform/resolvers/zod'.
 import { z } from 'zod'.
@@ -46,7 +47,7 @@ export default function LoginPage() {
     onError: (error: any) => {
       toast.error(error.response?.data?.error?.message || t('invalidCredentials'));
     },
-  });
+  };
 
   const handleSubmit = (data: LoginFormData) => {
     loginMutation.mutate(data);
@@ -65,33 +66,33 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <Input
-              label={t('email')}
+              label={t('email)}
               type="email"
               placeholder="you@example.com"
-              {...form.register('email')}
+              {...form.register('email)}
               error={form.formState.errors.email?.message}
               leftIcon={<Mail className="h-4 w-4" />}
             />
             <Input
-              label={t('password')}
+              label={t('password)}
               type="password"
               placeholder="••••••••"
-              {...form.register('password')}
+              {...form.register('password)}
               error={form.formState.errors.password?.message}
               leftIcon={<Lock className="h-4 w-4" />}
             />
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="h-4 w-4 rounded border-input text-primary focus:ring-primary" />
-                <span className="text-sm">{t('rememberMe')}</span>
+                <span className="text-sm">{t('rememberMe)}</span>
               </label>
               <Link href="/forgot-password" className="text-sm text-primary hover:underline">
-                {t('forgotPassword')}
+                {t('forgotPassword)}
               </Link>
             </div>
             <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
               {loginMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {t('signIn')}
+              {t('signIn)}
             </Button>
           </form>
           
@@ -106,7 +107,7 @@ export default function LoginPage() {
 
           <Button variant="outline" className="w-full" onClick={() => router.push('/register')}>
             <User className="h-4 w-4 mr-2" />
-            {t('noAccount')} {t('signUp')}
+            {t('noAccount)} {t('signUp)}
           </Button>
         </CardContent>
       </Card>
@@ -117,6 +118,6 @@ export default function LoginPage() {
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-});
+);
 
 type LoginFormData = z.infer<typeof loginSchema>;

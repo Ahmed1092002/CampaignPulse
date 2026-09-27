@@ -97,12 +97,10 @@ class ApiClient {
   }
 
   setWorkspaceId(workspaceId: string) {
-    setCookie('workspaceId', workspaceId, { maxAge: 60 * 60 * 24 * 30, path: '/', sameSite: 'lax' });
     this.client.defaults.headers['X-Workspace-ID'] = workspaceId;
   }
 
   clearWorkspaceId() {
-    deleteCookie('workspaceId', { path: '/' });
     delete this.client.defaults.headers['X-Workspace-ID'];
   }
 
@@ -134,6 +132,7 @@ class ApiClient {
 
 export const api = new ApiClient();
 
+// Auth API
 export const authApi = {
   login: (email: string, password: string) => api.post('/auth/login', { email, password }),
   register: (data: { email: string; password: string; firstName: string; lastName: string }) => 
@@ -150,6 +149,7 @@ export const authApi = {
   verifyResetToken: (token: string) => api.post('/auth/verify-reset-token', { token }),
 };
 
+// Workspace API
 export const workspaceApi = {
   create: (data: { name: string; slug: string; description?: string }) => api.post('/workspaces', data),
   getAll: () => api.get('/workspaces'),
@@ -161,6 +161,7 @@ export const workspaceApi = {
   updateSettings: (id: string, settings: Record<string, unknown>) => api.patch(`/workspaces/${id}/settings`, settings),
 };
 
+// Member API
 export const memberApi = {
   invite: (workspaceId: string, data: { email: string; role: string }) => 
     api.post(`/workspaces/${workspaceId}/members`, data),
@@ -172,6 +173,7 @@ export const memberApi = {
   leave: (workspaceId: string) => api.post(`/workspaces/${workspaceId}/members/leave`),
 };
 
+// Campaign API
 export const campaignApi = {
   create: (workspaceId: string, data: {
     name: string;
@@ -184,7 +186,7 @@ export const campaignApi = {
     channels: string[];
     status?: string;
   }) => api.post(`/workspaces/${workspaceId}/campaigns`, data),
-  getAll: (workspaceId: string, params?: { page?: number; limit?: number; status?: string; search?: string; sortBy?: string; sortOrder?: string }) =>
+  getAll: (workspaceId: string, params?: { page?: number; limit?: number; status?: string; search?: string; sortBy?: string; sortOrder?: string }) => 
     api.get(`/workspaces/${workspaceId}/campaigns`, params),
   getById: (workspaceId: string, id: string) => api.get(`/workspaces/${workspaceId}/campaigns/${id}`),
   update: (workspaceId: string, id: string, data: {
@@ -202,6 +204,7 @@ export const campaignApi = {
   generateSlug: (workspaceId: string, name: string) => api.post(`/workspaces/${workspaceId}/campaigns/generate-slug`, { name }),
 };
 
+// Landing Page API
 export const landingPageApi = {
   get: (workspaceId: string, campaignId: string) => api.get(`/workspaces/${workspaceId}/landing-pages/${campaignId}`),
   update: (workspaceId: string, campaignId: string, data: {
@@ -219,6 +222,7 @@ export const landingPageApi = {
     api.post(`/workspaces/${workspaceId}/landing-pages/${campaignId}/duplicate`, { targetCampaignId }),
 };
 
+// Lead API
 export const leadApi = {
   create: (workspaceId: string, data: {
     campaignId: string;
@@ -255,6 +259,7 @@ export const leadApi = {
     api.get(`/workspaces/${workspaceId}/leads/${campaignId}/sources`),
 };
 
+// Tracking API
 export const trackingApi = {
   trackEvent: (workspaceId: string, data: {
     campaignId: string;
@@ -290,6 +295,7 @@ export const trackingApi = {
     api.get(`/workspaces/${workspaceId}/tracking/counts`, { campaignId, startDate, endDate }),
 };
 
+// Analytics API
 export const analyticsApi = {
   getDashboardStats: (workspaceId: string, params?: {
     campaignId?: string;
@@ -305,8 +311,13 @@ export const analyticsApi = {
     channel?: string;
   }) => api.get(`/workspaces/${workspaceId}/analytics/campaign/${campaignId}`, params),
   getRealtimeStats: (workspaceId: string) => api.get(`/workspaces/${workspaceId}/analytics/realtime`),
+  getDeviceBreakdown: (workspaceId: string, params: { startDate: string; endDate: string }) =>
+    api.get(`/workspaces/${workspaceId}/analytics/devices`, params),
+  getGeoBreakdown: (workspaceId: string, params: { startDate: string; endDate: string }) =>
+    api.get(`/workspaces/${workspaceId}/analytics/geo`, params),
 };
 
+// Notification API
 export const notificationApi = {
   getAll: (workspaceId: string, params?: { page?: number; limit?: number; isRead?: boolean; type?: string }) => 
     api.get(`/workspaces/${workspaceId}/notifications`, params),
@@ -316,6 +327,7 @@ export const notificationApi = {
   delete: (workspaceId: string, id: string) => api.delete(`/workspaces/${workspaceId}/notifications/${id}`),
 };
 
+// Audit Log API
 export const auditLogApi = {
   getAll: (workspaceId: string, params?: {
     page?: number;
@@ -326,5 +338,34 @@ export const auditLogApi = {
     action?: string;
     startDate?: string;
     endDate?: string;
+  }) => api.get(`/workspaces/${workspaceId}/audit-logs`, params),
+};
+
+// Email API
+export const emailApi = {
+  sendTest: (workspaceId: string, data: { to: string; subject: string; html: string }) => 
+    api.post(`/workspaces/${workspaceId}/email/test`, data),
+  sendCampaign: (workspaceId: string, campaignId: string, data: { subject: string; html: string }) => 
+    api.post(`/workspaces/${workspaceId}/email/campaigns/${campaignId}/send`, data),
+};
+
+// Settings API
+export const settingsApi = {
+  get: (workspaceId: string) => api.get(`/workspaces/${workspaceId}/settings`),
+  update: (workspaceId: string, settings: Record<string, unknown>) => 
+    api.patch(`/workspaces/${workspaceId}/settings`, settings),
+};
+
+// Audit Log API
+export const auditLogApi = {
+  getAll: (workspaceId: string, params?: {
+    page?: number;
+    limit?: number;
+    entityType?: string;
+    entityId?: string;
+    userId?: string;
+    action?: string;
+    startDate?: string;
+    endDate: string;
   }) => api.get(`/workspaces/${workspaceId}/audit-logs`, params),
 };

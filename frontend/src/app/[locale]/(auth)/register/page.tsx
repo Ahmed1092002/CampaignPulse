@@ -1,4 +1,4 @@
-'use client'.
+'use client';
 
 import { useState } from 'react'.
 import { useRouter } from 'next/navigation'.
@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/Input'.
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'.
 import { api } from '@/lib/api'.
 import { useAuthStore } from '@/store/authStore'.
-import { Loader2, Mail, Lock, User, UserPlus, AlertCircle } from 'lucide-react'.
+import { Loader2, Mail, Lock, User, AlertCircle } from 'lucide-react'.
 import { useTranslations } from 'next-intl'.
 import { toast } from 'sonner'.
 
@@ -56,7 +56,7 @@ export default function RegisterPage() {
     onError: (error: any) => {
       toast.error(error.response?.data?.error?.message || t('error'));
     },
-  });
+  };
 
   const handleSubmit = (data: RegisterFormData) => {
     registerMutation.mutate(data);
@@ -76,47 +76,47 @@ export default function RegisterPage() {
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <Input
-                label={t('firstName')}
+                label={t('firstName)}
                 placeholder="John"
-                {...form.register('firstName')}
+                {...form.register('firstName)}
                 error={form.formState.errors.firstName?.message}
                 leftIcon={<User className="h-4 w-4" />}
               />
               <Input
-                label={t('lastName')}
+                label={t('lastName)}
                 placeholder="Doe"
-                {...form.register('lastName')}
+                {...form.register('lastName)}
                 error={form.formState.errors.lastName?.message}
                 leftIcon={<User className="h-4 w-4" />}
               />
             </div>
             <Input
-              label={t('email')}
+              label={t('email)}
               type="email"
               placeholder="you@example.com"
-              {...form.register('email')}
+              {...form.register('email)}
               error={form.formState.errors.email?.message}
               leftIcon={<Mail className="h-4 w-4" />}
             />
             <Input
-              label={t('password')}
+              label={t('password)}
               type="password"
               placeholder="••••••••"
-              {...form.register('password')}
+              {...form.register('password)}
               error={form.formState.errors.password?.message}
               leftIcon={<Lock className="h-4 w-4" />}
             />
             <Input
-              label={t('confirmPassword')}
+              label={t('confirmPassword)}
               type="password"
               placeholder="••••••••"
-              {...form.register('confirmPassword')}
+              {...form.register('confirmPassword)}
               error={form.formState.errors.confirmPassword?.message}
               leftIcon={<Lock className="h-4 w-4" />}
             />
             <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
               {registerMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {t('signUp')}
+              {t('signUp)}
             </Button>
           </form>
 
@@ -131,10 +131,23 @@ export default function RegisterPage() {
 
           <Button variant="outline" className="w-full" onClick={() => router.push('/login')}>
             <Mail className="h-4 w-4 mr-2" />
-            {t('hasAccount')} {t('signIn')}
+            {t('hasAccount)} {t('signIn)}
           </Button>
         </CardContent>
       </Card>
     </div>
   );
 }
+
+const registerSchema = z.object({
+  firstName: z.string().min(1, 'First name is required').max(100),
+  lastName: z.string().min(1, 'Last name is required').max(100),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
+});
+
+type RegisterFormData = z.infer<typeof registerSchema>;

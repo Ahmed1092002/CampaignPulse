@@ -1,8 +1,11 @@
-import 'next-intl';
-import type { messages } from './en';
+import { getRequestConfig } from 'next-intl/server';
+import { locales, defaultLocale } from './config';
 
-declare module 'next-intl' {
-  interface AppConfig {
-    Messages: typeof messages;
-  }
-}
+export default getRequestConfig(async ({ locale }) => {
+  const validatedLocale = locales.includes(locale as any) ? locale : defaultLocale;
+  
+  return {
+    locale: validatedLocale,
+    messages: (await import(`../messages/${validatedLocale}.json`)).default,
+  };
+});
