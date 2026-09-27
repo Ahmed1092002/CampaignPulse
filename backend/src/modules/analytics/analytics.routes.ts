@@ -14,5 +14,7 @@ router.use(apiRateLimiter);
 router.get('/dashboard', validate(analyticsController.analyticsValidators.query), analyticsController.getDashboardStats);
 router.get('/realtime', analyticsController.getRealtimeStats);
 router.get('/campaign/:id', validate(analyticsController.analyticsValidators.query), analyticsController.getCampaignAnalytics);
+router.get('/devices', analyticsController.getDeviceBreakdown);
+router.get('/geo', analyticsController.getGeoBreakdown);
 
 export default router;

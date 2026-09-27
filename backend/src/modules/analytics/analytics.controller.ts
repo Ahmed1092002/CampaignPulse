@@ -36,6 +36,26 @@ export async function getRealtimeStats(req: AuthenticatedRequest, res: Response)
   res.json(successResponse(stats));
 }
 
+export async function getDeviceBreakdown(req: AuthenticatedRequest, res: Response) {
+  if (!req.user || !req.workspaceId) throw new Error('User or workspace not set');
+  const { startDate, endDate } = req.query;
+  const stats = await analyticsService.getDeviceBreakdown(req.workspaceId, req.user.userId, {
+    startDate: startDate as string,
+    endDate: endDate as string,
+  });
+  res.json(successResponse(stats));
+}
+
+export async function getGeoBreakdown(req: AuthenticatedRequest, res: Response) {
+  if (!req.user || !req.workspaceId) throw new Error('User or workspace not set');
+  const { startDate, endDate } = req.query;
+  const stats = await analyticsService.getGeoBreakdown(req.workspaceId, req.user.userId, {
+    startDate: startDate as string,
+    endDate: endDate as string,
+  });
+  res.json(successResponse(stats));
+}
+
 export const analyticsValidators = {
   query: analyticsQuerySchema,
 };
