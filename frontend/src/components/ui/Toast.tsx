@@ -1,55 +1,27 @@
 'use client';
 
-import { Fragment, ReactNode, useRef, useState } from 'react';
-import { Portal } from './Portal';
-import { cn } from '@/lib/utils';
-import { CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
+import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
-interface ToastProps {
+interface Toast {
+  id: string;
   title: string;
   description?: string;
-  type?: 'success' | 'error' | 'warning' | 'info';
-  duration?: number;
-}
-
-function Toast({ title, description, type = 'info', duration = 5000 }: ToastProps) {
-  const icons = {
-    success: <CheckCircle className="h-5 w-5 text-green-500" />,
-    error: <XCircle className="h-5 w-5 text-red-500" />,
-    warning: <AlertTriangle className="h-5 w-5 text-yellow-500" />,
-    info: <Info className="h-5 w-5 text-blue-500" />,
-  };
-
-  const colors = {
-    success: 'border-green-500/50 bg-green-500/10',
-    error: 'border-red-500/50 bg-red-500/10',
-    warning: 'border-yellow-500/50 bg-yellow-500/10',
-    info: 'border-blue-500/50 bg-blue-500/10',
-  };
-
-  return (
-    <div className={`flex items-start gap-3 p-4 rounded-xl border shadow-lg animate-slide-up ${colors[type]}`}>
-      <div className="flex-shrink-0 mt-0.5">{icons[type]}</div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium">{title}</p>
-        {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
-      </div>
-    </div>
-  );
+  type: 'success' | 'error' | 'warning' | 'info';
+  duration: number;
 }
 
 interface ToastContextType {
   toasts: Toast[];
-  toast: (options: Omit<ToastProps, 'id'>) => string;
+  toast: (options: Omit<Toast, 'id'>) => string;
   dismiss: (id: string) => void;
 }
 
 const ToastContext = createContext<ToastContextType | null>(null);
 
-export function ToastProvider({ children }: { children: React.ReactNode }) {
+export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const toast = useCallback((options: Omit<ToastProps, 'id'>) => {
+  const toast = useCallback((options: Omit<Toast, 'id'>) => {
     const id = Math.random().toString(36).substr(2, 9);
     const newToast = { ...options, id };
     setToasts(prev => [...prev, newToast]);
@@ -90,20 +62,3 @@ export function useToastHelpers() {
     info: (title: string, description?: string) => toast({ title, description, type: 'info' }),
   };
 }
-
-export function Toaster() {
-  const { toasts } = useToast();
-
-  return (
-    <Fragment>
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 w-[380px] lg:w-[420px]">
-        {toasts.map(({ id, title, description, type, duration }) => (
-          <Toast key={id} title={title} description={description} type={type} duration={duration} />
-        ))}
-      </div>
-    </Fragment>
-  );
-}
-
-import { Fragment, useCallback, useContext, useState, ReactNode } from 'react';
-import { createContext, useContext } from 'react';

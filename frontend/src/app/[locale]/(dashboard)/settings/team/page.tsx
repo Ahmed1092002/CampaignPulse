@@ -1,10 +1,10 @@
-'use client';
+'use client'.
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useState } from 'react'.
+import { useForm } from 'react-hook-form'.
 import { zodResolver } from '@hookform/resolvers/zod'.
 import { z } from 'zod'.
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'.
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react_query'.
 import { DashboardLayout } from '@/components/layout/DashboardLayout'.
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'.
 import { Button } from '@/components/ui/Button'.
@@ -135,7 +135,7 @@ export default function TeamSettingsPage() {
               <div className="space-y-4">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <div key={i} className="h-16 animate-pulse bg-muted rounded" />
-                )}
+                ))}
               </div>
             ) : (
               <div className="space-y-4">

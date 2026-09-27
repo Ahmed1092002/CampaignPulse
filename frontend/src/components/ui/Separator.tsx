@@ -1,8 +1,7 @@
 'use client';
 
 import { HTMLAttributes, forwardRef } from 'react';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@/lib/utils';
 
 export const Separator = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement> & { orientation?: 'horizontal' | 'vertical'; decorative?: boolean }>(
   ({ className, orientation = 'horizontal', decorative = true, ...props }, ref) => (
@@ -10,7 +9,7 @@ export const Separator = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElemen
       ref={ref}
       role={decorative ? 'none' : 'separator'}
       aria-orientation={decorative ? undefined : orientation}
-      className={twMerge(
+      className={cn(
         'shrink-0 bg-border',
         orientation === 'horizontal' ? 'h-[1px] w-full' : 'h-full w-[1px]',
         className

@@ -200,4 +200,4 @@ export function CampaignOverview({ campaign }: CampaignOverviewProps) {
   );
 }
 
-import { Target, CheckCircle, Clock, LayoutDashboard, Users, BarChart2, Edit, ExternalLink, Copy } from 'lucide-react';
+import { Target, CheckCircle, Clock } from 'lucide-react';

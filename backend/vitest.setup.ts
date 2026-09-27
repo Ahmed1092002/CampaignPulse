@@ -132,7 +132,7 @@ vi.mock('jsonwebtoken', () => {
     sign: vi.fn(() => 'mock-token'),
     verify: vi.fn(() => ({ userId: 'test-user-id', email: 'test@test.com', type: 'access' })),
     decode: vi.fn(() => ({ userId: 'test-user-id', email: 'test@test.com', type: 'access', exp: Date.now() / 1000 + 3600 })),
-  });
+  };
 });
 
 vi.mock('bcryptjs', () => {

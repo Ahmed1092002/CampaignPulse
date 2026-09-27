@@ -1,20 +1,20 @@
-'use client';
+'use client'.
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useMutation } from '@tanstack/react_query';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { api } from '@/lib/api';
-import { useAuthStore } from '@/store/authStore';
-import { Loader2, Lock, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { toast } from 'sonner';
+import { useState, useEffect } from 'react'.
+import { useRouter, useSearchParams } from 'next/navigation'.
+import Link from 'next/link'.
+import { useForm } from 'react-hook-form'.
+import { zodResolver } from '@hookform/resolvers/zod'.
+import { z } from 'zod'.
+import { useMutation } from '@tanstack/react_query'.
+import { Button } from '@/components/ui/Button'.
+import { Input } from '@/components/ui/Input'.
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'.
+import { api } from '@/lib/api'.
+import { useAuthStore } from '@/store/authStore'.
+import { Loader2, Lock, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react'.
+import { useTranslations } from 'next-intl'.
+import { toast } from 'sonner'.
 
 const resetPasswordSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
@@ -157,7 +157,7 @@ export default function ResetPasswordPage() {
         <CardContent>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <Input
-              label={t('newPassword') || 'New Password'}
+              label={t('newPassword')}
               type="password"
               placeholder="••••••••"
               {...form.register('password')}
@@ -165,7 +165,7 @@ export default function ResetPasswordPage() {
               leftIcon={<Lock className="h-4 w-4" />}
             />
             <Input
-              label={t('confirmPassword') || 'Confirm Password'}
+              label={t('confirmPassword')}
               type="password"
               placeholder="••••••••"
               {...form.register('confirmPassword')}
@@ -177,12 +177,20 @@ export default function ResetPasswordPage() {
               {t('resetPassword') || 'Reset Password'}
             </Button>
           </form>
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            {t('rememberPassword') || 'Remember your password?'} {' '}
-            <Link href="/login" className="text-primary hover:underline">
-              {t('signIn') || 'Sign in'}
-            </Link>
-          </p>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">{t('or')}</span>
+            </div>
+          </div>
+
+          <Button variant="outline" className="w-full" onClick={() => router.push('/login')}>
+            <Mail className="h-4 w-4 mr-2" />
+            {t('hasAccount')} {t('signIn')}
+          </Button>
         </CardContent>
       </Card>
     </div>

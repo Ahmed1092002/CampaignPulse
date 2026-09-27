@@ -1,13 +1,13 @@
-'use client';
+'use client'.
 
-import { useParams } from 'next/navigation';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react_query';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { CampaignTabs } from '@/components/campaigns/CampaignTabs';
-import { LandingPageBuilder } from '@/components/landing-page/LandingPageBuilder';
-import { api } from '@/lib/api';
-import { useAuthStore } from '@/store/authStore';
-import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation'.
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react_query'.
+import { DashboardLayout } from '@/components/layout/DashboardLayout'.
+import { CampaignTabs } from '@/components/campaigns/CampaignTabs'.
+import { LandingPageBuilder } from '@/components/landing-page/LandingPageBuilder'.
+import { api } from '@/lib/api'.
+import { useAuthStore } from '@/store/authStore'.
+import { useTranslations } from 'next-intl'.
 
 export default function CampaignBuilderPage() {
   const params = useParams();

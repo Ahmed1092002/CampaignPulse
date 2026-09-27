@@ -1,15 +1,15 @@
-'use client';
+'use client'.
 
-import { useParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react_query';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { CampaignTabs } from '@/components/campaigns/CampaignTabs';
-import { CampaignOverview } from '@/components/campaigns/CampaignOverview';
-import { CampaignLeads } from '@/components/campaigns/CampaignLeads';
-import { CampaignSources } from '@/components/campaigns/CampaignSources';
-import { api } from '@/lib/api';
-import { useAuthStore } from '@/store/authStore';
-import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation'.
+import { useQuery } from '@tanstack/react_query'.
+import { DashboardLayout } from '@/components/layout/DashboardLayout'.
+import { CampaignTabs } from '@/components/campaigns/CampaignTabs'.
+import { CampaignOverview } from '@/components/campaigns/CampaignOverview'.
+import { CampaignLeads } from '@/components/campaigns/CampaignLeads'.
+import { CampaignSources } from '@/components/campaigns/CampaignSources'.
+import { api } from '@/lib/api'.
+import { useAuthStore } from '@/store/authStore'.
+import { useTranslations } from 'next-intl'.
 
 export default function CampaignDetailPage() {
   const params = useParams();
@@ -31,7 +31,7 @@ export default function CampaignDetailPage() {
           <div className="grid gap-4 md:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="h-24 bg-muted rounded" />
-            )}
+            ))}
           </div>
         </div>
       </DashboardLayout>

@@ -1,21 +1,21 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react'.
-import { useForm } from 'react-hook-form'.
-import { zodResolver } from '@hookform/resolvers/zod'.
-import { z } from 'zod'.
-import { Button } from '@/components/ui/Button'.
-import { Input } from '@/components/ui/Input'.
-import { Textarea } from '@/components/ui/Input'.
-import { Select } from '@/components/ui/Input'.
-import { Card, CardContent } from '@/components/ui/Card'.
-import { Badge } from '@/components/ui/Badge'.
-import { api } from '@/lib/api'.
-import { useTranslations } from 'next-intl'.
-import { cn } from '@/lib/utils'.
-import { toast } from 'sonner'.
-import { Loader2, CheckCircle, MessageSquare, Star, Zap, Shield, Target, ArrowRight, X } from 'lucide-react'.
-import { QrCodeModal } from './QrCodeModal'.
+import { useState, useEffect, useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Input';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { api } from '@/lib/api';
+import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { Loader2, CheckCircle, MessageSquare, Star, Zap, Shield, Target, ArrowRight, X } from 'lucide-react';
+import { QrCodeModal } from './QrCodeModal';
 
 interface PublicLandingPageProps {
   campaign: {
@@ -35,7 +35,6 @@ interface PublicLandingPageProps {
   };
   workspace: { id: string; name: string; logoUrl?: string };
   locale: string;
-  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 const leadFormSchema = z.record(z.any());
@@ -51,7 +50,7 @@ const ICON_COMPONENTS: Record<string, React.ComponentType<{ className?: string }
   message: MessageSquare,
 };
 
-export function PublicLandingPage({ campaign, landingPage, workspace, locale, searchParams }: PublicLandingPageProps) {
+export function PublicLandingPage({ campaign, landingPage, workspace, locale }: PublicLandingPageProps) {
   const t = useTranslations('public.landingPage');
   const isRTL = locale === 'ar';
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -68,11 +67,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
   const handleSubmit = async (data: LeadFormData) => {
     setSubmitting(true);
     try {
-      const utmParams = new URLSearchParams();
-      Object.entries(searchParams).forEach(([key, value]) => {
-        if (value && !Array.isArray(value)) utmParams.set(key, value);
-      });
-
+      const utmParams = new URLSearchParams(window.location.search);
       const payload = {
         campaignId: campaign.id,
         firstName: data.firstName || '',
@@ -92,6 +87,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
       setFormSubmitted(true);
       toast.success(t('leadForm.successTitle'), { description: t('leadForm.successMessage') });
       
+      // Track form submit event
       trackEvent('FORM_SUBMIT');
     } catch (error: any) {
       toast.error(t('leadForm.errorMessage'));

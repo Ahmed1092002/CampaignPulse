@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react_query';
+import { useQuery, useMutation } from '@tanstack/react_query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -23,7 +23,6 @@ export function CampaignSources({ campaignId }: CampaignSourcesProps) {
   const { workspaceId } = useAuthStore();
   const t = useTranslations('campaigns');
   const [showQr, setShowQr] = useState<string | null>(null);
-  const queryClient = useQueryClient();
 
   const { data: sourcesData, isLoading, refetch } = useQuery({
     queryKey: ['campaign-sources', workspaceId, campaignId],

@@ -1,8 +1,7 @@
 'use client';
 
 import { ImgHTMLAttributes, forwardRef, useState } from 'react';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@/lib/utils';
 
 interface AvatarProps extends ImgHTMLAttributes<HTMLImageElement> {
   fallback?: string;
@@ -31,7 +30,7 @@ export const Avatar = forwardRef<HTMLImageElement, AvatarProps>(
       return (
         <div
           ref={ref}
-          className={twMerge(
+          className={cn(
             'inline-flex items-center justify-center rounded-full bg-primary/10 text-primary font-medium',
             sizeClasses[size],
             className
@@ -48,7 +47,7 @@ export const Avatar = forwardRef<HTMLImageElement, AvatarProps>(
         ref={ref}
         src={src}
         alt={alt || fallback || ''}
-        className={twMerge('inline-flex rounded-full object-cover', sizeClasses[size], className)}
+        className={cn('inline-flex rounded-full object-cover', sizeClasses[size], className)}
         onError={() => setImageError(true)}
         {...props}
       />

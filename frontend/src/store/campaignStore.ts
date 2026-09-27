@@ -25,22 +25,22 @@ interface CampaignState {
   } | null;
   isLoading: boolean;
   error: string | null;
-
+  
   setCampaigns: (campaigns: Campaign[]) => void;
   addCampaign: (campaign: Campaign) => void;
   updateCampaign: (id: string, data: Partial<Campaign>) => void;
   removeCampaign: (id: string) => void;
   setCurrentCampaign: (campaign: Campaign | null) => void;
-
+  
   setLeads: (leads: Lead[]) => void;
   addLead: (lead: Lead) => void;
   updateLead: (id: string, data: Partial<Lead>) => void;
   removeLead: (id: string) => void;
   setCurrentLead: (lead: Lead | null) => void;
-
+  
   setDashboardStats: (stats: DashboardStats) => void;
   setRealtimeStats: (stats: CampaignState['realtimeStats']) => void;
-
+  
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;

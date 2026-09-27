@@ -1,7 +1,7 @@
-import { Metadata } from 'next'.
-import { notFound } from 'next/navigation'.
-import { PublicLandingPage } from '@/components/landing-page/PublicLandingPage'.
-import { api } from '@/lib/api'.
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { PublicLandingPage } from '@/components/landing-page/PublicLandingPage';
+import { api } from '@/lib/api';
 
 interface PageProps {
   params: { slug: string; locale: string };

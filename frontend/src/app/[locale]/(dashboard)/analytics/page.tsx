@@ -1,9 +1,9 @@
-'use client';
+'use client'.
 
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react_query';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useState } from 'react'.
+import { useQuery } from '@tanstack/react_query'.
+import { DashboardLayout } from '@/components/layout/DashboardLayout'.
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'.
 import { Button } from '@/components/ui/Button'.
 import { Select } from '@/components/ui/Input'.
 import { api } from '@/lib/api'.
@@ -16,6 +16,11 @@ import { cn } from '@/lib/utils'.
 
 const COLORS = ['#0ea5e9', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 const DEVICE_COLORS = { desktop: '#0ea5e9', mobile: '#22c55e', tablet: '#f59e0b' };
+
+interface DateRange {
+  from: Date;
+  to: Date;
+}
 
 export default function AnalyticsPage() {
   const { workspaceId } = useAuthStore();
@@ -136,7 +141,7 @@ export default function AnalyticsPage() {
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="w-[300px] justify-start gap-2 bg-amber-500/10 border-amber-500/30 text-amber-700">
-                    <GitCompare className="h-4 w-4" />
+                    <Calendar className="h-4 w-4" />
                     <span className="text-xs">
                       Compare: {formatDate(compareRange.from, 'en-US', { month: 'short', day: 'numeric' })} -{' '}
                       {formatDate(compareRange.to, 'en-US', { month: 'short', day: 'numeric' })}
@@ -181,7 +186,7 @@ export default function AnalyticsPage() {
                 { value: '', label: 'All Campaigns' },
                 ...(data?.leadsByCampaign?.map((c: any) => ({ value: c.campaignId, label: c.campaignName })) || []),
               ]}
-              className="w-40"
+              className="w-48"
             />
 
             <Popover>

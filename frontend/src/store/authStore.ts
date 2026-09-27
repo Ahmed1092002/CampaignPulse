@@ -12,7 +12,7 @@ interface AuthState {
   currentWorkspace: Workspace | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-
+  
   setAuth: (data: { user: User; accessToken: string; refreshToken: string; workspaces: WorkspaceMembership[] }) => void;
   setUser: (user: User) => void;
   setWorkspaces: (workspaces: WorkspaceMembership[]) => void;
@@ -38,9 +38,9 @@ export const useAuthStore = create<AuthState>()(
         setCookie('accessToken', accessToken, { maxAge: 60 * 15, path: '/', sameSite: 'lax' });
         setCookie('refreshToken', refreshToken, { maxAge: 60 * 60 * 24 * 7, path: '/', sameSite: 'lax' });
         setCookie('user', JSON.stringify(user), { maxAge: 60 * 60 * 24 * 30, path: '/', sameSite: 'lax' });
-
+        
         api.client.defaults.headers.Authorization = `Bearer ${accessToken}`;
-
+        
         set({
           user,
           accessToken,
@@ -83,10 +83,10 @@ export const useAuthStore = create<AuthState>()(
         deleteCookie('refreshToken', { path: '/' });
         deleteCookie('user', { path: '/' });
         deleteCookie('workspaceId', { path: '/' });
-
+        
         delete api.client.defaults.headers.Authorization;
         api.clearWorkspaceId();
-
+        
         set({
           user: null,
           accessToken: null,
@@ -100,9 +100,9 @@ export const useAuthStore = create<AuthState>()(
       updateTokens: (accessToken: string, refreshToken: string) => {
         setCookie('accessToken', accessToken, { maxAge: 60 * 15, path: '/', sameSite: 'lax' });
         setCookie('refreshToken', refreshToken, { maxAge: 60 * 60 * 24 * 7, path: '/', sameSite: 'lax' });
-
+        
         api.client.defaults.headers.Authorization = `Bearer ${accessToken}`;
-
+        
         set({ accessToken, refreshToken });
       },
 
@@ -119,9 +119,9 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           const user = JSON.parse(userStr as string);
-
+          
           api.client.defaults.headers.Authorization = `Bearer ${accessToken}`;
-
+          
           if (workspaceId) {
             api.setWorkspaceId(workspaceId as string);
           }

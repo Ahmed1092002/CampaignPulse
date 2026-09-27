@@ -204,12 +204,12 @@ export interface Notification {
   createdAt: string;
 }
 
-export type NotificationType =
-  | 'NEW_LEAD'
-  | 'LEAD_STATUS_CHANGED'
-  | 'CAMPAIGN_PUBLISHED'
-  | 'CAMPAIGN_PAUSED'
-  | 'MEMBER_INVITED'
+export type NotificationType = 
+  | 'NEW_LEAD' 
+  | 'LEAD_STATUS_CHANGED' 
+  | 'CAMPAIGN_PUBLISHED' 
+  | 'CAMPAIGN_PAUSED' 
+  | 'MEMBER_INVITED' 
   | 'MEMBER_REMOVED';
 
 export interface AuditLog {
@@ -248,7 +248,6 @@ export interface DashboardStats {
     message: string;
     createdAt: string;
   }>;
-  compareData?: DashboardStats;
 }
 
 export interface RealtimeStats {
@@ -388,7 +387,4 @@ export interface AnalyticsQueryParams {
   endDate?: string;
   groupBy?: 'day' | 'week' | 'month';
   channel?: string;
-  compareEnabled?: boolean;
-  compareStartDate?: string;
-  compareEndDate?: string;
 }

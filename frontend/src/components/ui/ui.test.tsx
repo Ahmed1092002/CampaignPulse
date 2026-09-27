@@ -74,7 +74,7 @@ describe('UI Components', () => {
       render(<Badge variant="success">Success</Badge>);
       expect(screen.getByText(/success/i)).toBeInTheDocument();
       expect(screen.getByText(/success/i).parentElement).toHaveClass('bg-success-500');
-    });
+    );
 
     it('renders badge with default variant', () => {
       render(<Badge>Default</Badge>);

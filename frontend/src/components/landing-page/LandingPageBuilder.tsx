@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react_query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -77,21 +77,13 @@ const defaultCta = {
   buttonLink: '#lead-form',
 };
 
-const defaultLeadFormField: any = {
-  id: '',
+const defaultLeadFormField = {
   type: 'text',
   name: '',
   label: '',
   placeholder: '',
   required: false,
   options: [],
-  validation: undefined,
-  conditional: undefined,
-  step: 1,
-  hidden: false,
-  helpText: '',
-  width: 'full',
-  order: 0,
 };
 
 const defaultSeo = {
@@ -115,15 +107,7 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
   const [features, setFeatures] = useState(campaign.landingPage?.features || [defaultFeature]);
   const [testimonials, setTestimonials] = useState(campaign.landingPage?.testimonials || [defaultTestimonial]);
   const [cta, setCta] = useState(campaign.landingPage?.cta || defaultCta);
-  const [leadForm, setLeadForm] = useState<any[]>(
-    (campaign.landingPage?.leadForm || []).map((f: any, i: number) => ({
-      ...defaultLeadFormField,
-      ...f,
-      id: f.id || `field_${Date.now()}_${i}`,
-      order: f.order ?? i,
-      step: f.step || 1,
-    }))
-  );
+  const [leadForm, setLeadForm] = useState(campaign.landingPage?.leadForm || [defaultLeadFormField]);
   const [seo, setSeo] = useState(campaign.landingPage?.seo || defaultSeo);
   const [customCss, setCustomCss] = useState(campaign.landingPage?.customCss || '');
   const [isPublished, setIsPublished] = useState(campaign.landingPage?.isPublished || false);
@@ -153,7 +137,7 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
       features,
       testimonials,
       cta,
-      leadForm: leadForm.map((f, i) => ({ ...f, order: i })),
+      leadForm,
       seo,
       customCss,
       isPublished: publish || isPublished,
@@ -319,12 +303,66 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
         </TabsContent>
 
         <TabsContent value="leadForm" className="mt-6">
-          <LeadFormBuilder
-            fields={leadForm}
-            onFieldsChange={setLeadForm}
-            availableFields={leadForm}
-            maxSteps={5}
-          />
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>{t('sections.leadForm')}</CardTitle>
+              <Button size="sm" variant="outline" onClick={() => setLeadForm([...leadForm, { ...defaultLeadFormField, name: `field_${Date.now()}` }])}>
+                <Plus className="h-4 w-4 mr-2" />{t('leadForm.addField') || 'Add Field'}
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {leadForm.map((field, index) => (
+                <div key={index} className="border rounded-lg p-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">Field {index + 1}</h4>
+                    {leadForm.length > 1 && (
+                      <Button variant="ghost" size="sm" onClick={() => setLeadForm(leadForm.filter((_, i) => i !== index))}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-4">
+                    <Select
+                      label={t('leadForm.fieldType')}
+                      value={field.type}
+                      onChange={(e) => setLeadForm(leadForm.map((f, i) => i === index ? { ...f, type: e.target.value as any } : f))}
+                      options={[
+                        { value: 'text', label: t('leadForm.types.text') },
+                        { value: 'email', label: t('leadForm.types.email') },
+                        { value: 'phone', label: t('leadForm.types.phone') },
+                        { value: 'select', label: t('leadForm.types.select') },
+                        { value: 'textarea', label: t('leadForm.types.textarea') },
+                      ]}
+                    />
+                    <Input label={t('leadForm.fieldName')} value={field.name} onChange={(e) => setLeadForm(leadForm.map((f, i) => i === index ? { ...f, name: e.target.value } : f))} />
+                    <Input label={t('leadForm.fieldLabel')} value={field.label} onChange={(e) => setLeadForm(leadForm.map((f, i) => i === index ? { ...f, label: e.target.value } : f))} />
+                    <Input label={t('leadForm.fieldPlaceholder')} value={field.placeholder} onChange={(e) => setLeadForm(leadForm.map((f, i) => i === index ? { ...f, placeholder: e.target.value } : f))} />
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={field.required}
+                        onChange={(e) => setLeadForm(leadForm.map((f, i) => i === index ? { ...f, required: e.target.checked } : f))}
+                        className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm">{t('leadForm.fieldRequired')}</span>
+                    </label>
+                    {field.type === 'select' && (
+                      <div className="md:col-span-2">
+                        <label className="text-sm font-medium">{t('leadForm.fieldOptions') || 'Options (comma separated)'}</label>
+                        <Input
+                          value={field.options.join(', ')}
+                          onChange={(e) => setLeadForm(leadForm.map((f, i) => i === index ? { ...f, options: e.target.value.split(',').map(s => s.trim()) } : f))}
+                          placeholder="Option 1, Option 2, Option 3"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="seo" className="mt-6">
@@ -357,7 +395,4 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
   );
 }
 
-import { LeadFormBuilder } from './LeadFormBuilder';
-import { ValidationEditor } from './ValidationEditor';
-import { ConditionalEditor } from './ConditionalEditor';
-import { StepEditor } from './StepEditor';
+import { Plus, Trash2, LayoutDashboard, Sparkles, MessageSquare, MousePointerClick, UserPlus, Save, Eye, Globe, Loader2, CheckCircle, AlertCircle, Target, Sparkles, MessageSquare, MousePointerClick, UserPlus, Save, Eye, Globe, Loader2, CheckCircle, AlertCircle, Target, Sparkles, MessageSquare, MousePointerClick, UserPlus, Save, Eye, Globe, Loader2, CheckCircle, AlertCircle, Target } from 'lucide-react';

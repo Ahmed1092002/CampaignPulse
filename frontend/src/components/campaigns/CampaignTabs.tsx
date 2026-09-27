@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Badge, getStatusBadge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/DropdownMenu';
-import { MoreHorizontal, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Trash2, Copy, ExternalLink, Edit } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 

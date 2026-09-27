@@ -1,20 +1,20 @@
-'use client';
+'use client'.
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useMutation } from '@tanstack/react_query';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { api } from '@/lib/api';
-import { useAuthStore } from '@/store/authStore';
-import { Loader2, Mail, Lock, User, UserPlus, AlertCircle } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { toast } from 'sonner';
+import { useState } from 'react'.
+import { useRouter } from 'next/navigation'.
+import Link from 'next/link'.
+import { useForm } from 'react-hook-form'.
+import { zodResolver } from '@hookform/resolvers/zod'.
+import { z } from 'zod'.
+import { useMutation } from '@tanstack/react_query'.
+import { Button } from '@/components/ui/Button'.
+import { Input } from '@/components/ui/Input'.
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'.
+import { api } from '@/lib/api'.
+import { useAuthStore } from '@/store/authStore'.
+import { Loader2, Mail, Lock, User, UserPlus, AlertCircle } from 'lucide-react'.
+import { useTranslations } from 'next-intl'.
+import { toast } from 'sonner'.
 
 const registerSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(100),
@@ -138,16 +138,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
-const registerSchema = z.object({
-  firstName: z.string().min(1, 'First name is required').max(100),
-  lastName: z.string().min(1, 'Last name is required').max(100),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
-
-type RegisterFormData = z.infer<typeof registerSchema>;
