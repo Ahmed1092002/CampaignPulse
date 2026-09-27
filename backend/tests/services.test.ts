@@ -116,11 +116,13 @@ vi.mock('bcryptjs', () => ({
   compare: vi.fn(() => true),
 }));
 
-vi.mock('jsonwebtoken', () => ({
-  sign: vi.fn(() => 'mock-token'),
-  verify: vi.fn(() => ({ userId: 'test-user-id', email: 'test@test.com', type: 'access' })),
-  decode: vi.fn(() => ({ userId: 'test-user-id', email: 'test@test.com', type: 'access', exp: Date.now() / 1000 + 3600 })),
-}));
+vi.mock('jsonwebtoken', () => {
+  return {
+    sign: vi.fn(() => 'mock-token'),
+    verify: vi.fn(() => ({ userId: 'test-user-id', email: 'test@test.com', type: 'access' })),
+    decode: vi.fn(() => ({ userId: 'test-user-id', email: 'test@test.com', type: 'access', exp: Date.now() / 1000 + 3600 })),
+  });
+});
 
 describe('Auth Service', () => {
   beforeEach(() => {

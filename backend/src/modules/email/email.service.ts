@@ -1,6 +1,6 @@
 import nodemailer, { Transporter, SendMailOptions } from 'nodemailer';
-import env from '../config/env';
-import logger from '../config/logger';
+import env from '../../config/env';
+import logger from '../../config/logger';
 
 interface EmailTemplate {
   subject: string;
@@ -67,7 +67,6 @@ class EmailService {
   }
 
   private registerDefaultTemplates() {
-    // Member invitation
     this.registerTemplate('member_invited', (data) => ({
       subject: `You're invited to join ${data.workspaceName} on CampaignPulse`,
       html: `
@@ -95,7 +94,6 @@ class EmailService {
       text: `You're invited to join ${data.workspaceName} on CampaignPulse!\n\n${data.inviterName} invited you as a ${data.role}.\n\nAccept here: ${data.inviteUrl}\n\nExpires in 7 days.`,
     }));
 
-    // New lead notification
     this.registerTemplate('new_lead', (data) => ({
       subject: `New lead: ${data.leadName} from ${data.campaignName}`,
       html: `
@@ -130,7 +128,6 @@ class EmailService {
       text: `New lead: ${data.leadName} from ${data.campaignName}\nEmail: ${data.leadEmail}\nSource: ${data.source || 'Direct'}\nTime: ${new Date(data.timestamp).toLocaleString()}\nView: ${data.leadUrl}`,
     }));
 
-    // Lead status changed
     this.registerTemplate('lead_status_changed', (data) => ({
       subject: `Lead status updated: ${data.leadName} → ${data.newStatus}`,
       html: `
@@ -156,7 +153,6 @@ class EmailService {
       text: `Lead status updated: ${data.leadName} (${data.leadEmail})\n${data.oldStatus} → ${data.newStatus}\nCampaign: ${data.campaignName}\nView: ${data.leadUrl}`,
     }));
 
-    // Campaign published
     this.registerTemplate('campaign_published', (data) => ({
       subject: `Campaign published: ${data.campaignName}`,
       html: `
@@ -183,7 +179,6 @@ class EmailService {
       text: `Campaign published: ${data.campaignName}\nPublic URL: ${data.publicUrl}`,
     }));
 
-    // Password reset
     this.registerTemplate('password_reset', (data) => ({
       subject: 'Reset your CampaignPulse password',
       html: `
@@ -208,7 +203,6 @@ class EmailService {
       text: `Reset your password: ${data.resetUrl}\nExpires in 1 hour. If you didn't request this, ignore this email.`,
     }));
 
-    // Daily summary
     this.registerTemplate('daily_summary', (data) => ({
       subject: `Daily Summary - ${data.workspaceName} • ${data.date}`,
       html: `
@@ -284,7 +278,6 @@ class EmailService {
       text: emailText,
     };
 
-    // Development mode - log instead of send
     if (!this.isConfigured || env.NODE_ENV === 'development') {
       logger.info('📧 [DEV MODE] Email would be sent:', {
         to: mailOptions.to,

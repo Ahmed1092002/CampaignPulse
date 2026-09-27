@@ -15,7 +15,7 @@ interface UIState {
     duration?: number;
   }>;
   modals: Record<string, boolean>;
-  
+
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
   toggleMobileSidebar: () => void;
@@ -65,12 +65,12 @@ export const useUIStore = create<UIState>()(
         const id = Math.random().toString(36).substr(2, 9);
         const newNotification = { ...notification, id };
         set((state) => ({ notifications: [...state.notifications, newNotification] }));
-        
+
         const duration = notification.duration ?? 5000;
         setTimeout(() => {
           get().removeNotification(id);
         }, duration);
-        
+
         return id;
       },
 
@@ -100,14 +100,14 @@ export const useUIStore = create<UIState>()(
 if (typeof window !== 'undefined') {
   const { theme, locale } = useUIStore.getState();
   const root = document.documentElement;
-  
+
   if (theme === 'system') {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     root.classList.toggle('dark', prefersDark);
   } else {
     root.classList.toggle('dark', theme === 'dark');
   }
-  
+
   root.dir = locale === 'ar' ? 'rtl' : 'ltr';
   root.lang = locale;
 }

@@ -136,14 +136,14 @@ export const api = new ApiClient();
 
 export const authApi = {
   login: (email: string, password: string) => api.post('/auth/login', { email, password }),
-  register: (data: { email: string; password: string; firstName: string; lastName: string }) => 
+  register: (data: { email: string; password: string; firstName: string; lastName: string }) =>
     api.post('/auth/register', data),
   refresh: (refreshToken: string) => api.post('/auth/refresh', { refreshToken }),
   logout: () => api.post('/auth/logout'),
   getProfile: () => api.get('/auth/profile'),
-  updateProfile: (data: { firstName?: string; lastName?: string; locale?: string; avatarUrl?: string }) => 
+  updateProfile: (data: { firstName?: string; lastName?: string; locale?: string; avatarUrl?: string }) =>
     api.patch('/auth/profile', data),
-  changePassword: (currentPassword: string, newPassword: string) => 
+  changePassword: (currentPassword: string, newPassword: string) =>
     api.post('/auth/change-password', { currentPassword, newPassword }),
   forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),
   resetPassword: (token: string, newPassword: string) => api.post('/auth/reset-password', { token, newPassword }),
@@ -154,7 +154,7 @@ export const workspaceApi = {
   create: (data: { name: string; slug: string; description?: string }) => api.post('/workspaces', data),
   getAll: () => api.get('/workspaces'),
   getById: (id: string) => api.get(`/workspaces/${id}`),
-  update: (id: string, data: { name?: string; description?: string; logoUrl?: string; settings?: Record<string, unknown> }) => 
+  update: (id: string, data: { name?: string; description?: string; logoUrl?: string; settings?: Record<string, unknown> }) =>
     api.patch(`/workspaces/${id}`, data),
   delete: (id: string) => api.delete(`/workspaces/${id}`),
   getSettings: (id: string) => api.get(`/workspaces/${id}/settings`),
@@ -162,12 +162,12 @@ export const workspaceApi = {
 };
 
 export const memberApi = {
-  invite: (workspaceId: string, data: { email: string; role: string }) => 
+  invite: (workspaceId: string, data: { email: string; role: string }) =>
     api.post(`/workspaces/${workspaceId}/members`, data),
   getAll: (workspaceId: string) => api.get(`/workspaces/${workspaceId}/members`),
-  updateRole: (workspaceId: string, memberId: string, role: string) => 
+  updateRole: (workspaceId: string, memberId: string, role: string) =>
     api.patch(`/workspaces/${workspaceId}/members/${memberId}`, { role }),
-  remove: (workspaceId: string, memberId: string) => 
+  remove: (workspaceId: string, memberId: string) =>
     api.delete(`/workspaces/${workspaceId}/members/${memberId}`),
   leave: (workspaceId: string) => api.post(`/workspaces/${workspaceId}/members/leave`),
 };
@@ -184,7 +184,7 @@ export const campaignApi = {
     channels: string[];
     status?: string;
   }) => api.post(`/workspaces/${workspaceId}/campaigns`, data),
-  getAll: (workspaceId: string, params?: { page?: number; limit?: number; status?: string; search?: string; sortBy?: string; sortOrder?: string }) => 
+  getAll: (workspaceId: string, params?: { page?: number; limit?: number; status?: string; search?: string; sortBy?: string; sortOrder?: string }) =>
     api.get(`/workspaces/${workspaceId}/campaigns`, params),
   getById: (workspaceId: string, id: string) => api.get(`/workspaces/${workspaceId}/campaigns/${id}`),
   update: (workspaceId: string, id: string, data: {
@@ -204,10 +204,18 @@ export const campaignApi = {
 
 export const landingPageApi = {
   get: (workspaceId: string, campaignId: string) => api.get(`/workspaces/${workspaceId}/landing-pages/${campaignId}`),
-  update: (workspaceId: string, campaignId: string, data: any) => api.patch(`/workspaces/${workspaceId}/landing-pages/${campaignId}`, data),
+  update: (workspaceId: string, campaignId: string, data: {
+    hero?: Record<string, unknown>;
+    features?: unknown[];
+    testimonials?: unknown[];
+    cta?: Record<string, unknown>;
+    leadForm?: unknown[];
+    seo?: Record<string, unknown>;
+    customCss?: string;
+    isPublished?: boolean;
+  }) => api.patch(`/workspaces/${workspaceId}/landing-pages/${campaignId}`, data),
   getPublic: (slug: string) => api.get(`/workspaces/public/landing-pages/${slug}`),
-  getPublishedCampaigns: () => api.get(`/workspaces/public/landing-pages/published-campaigns`),
-  duplicate: (workspaceId: string, campaignId: string, targetCampaignId: string) => 
+  duplicate: (workspaceId: string, campaignId: string, targetCampaignId: string) =>
     api.post(`/workspaces/${workspaceId}/landing-pages/${campaignId}/duplicate`, { targetCampaignId }),
 };
 
@@ -226,24 +234,24 @@ export const leadApi = {
     utmContent?: string;
     referrer?: string;
   }) => api.post(`/workspaces/${workspaceId}/leads`, data),
-  getAll: (workspaceId: string, params?: { 
-    page?: number; 
-    limit?: number; 
-    campaignId?: string; 
-    status?: string; 
-    search?: string; 
-    sortBy?: string; 
-    sortOrder?: string 
+  getAll: (workspaceId: string, params?: {
+    page?: number;
+    limit?: number;
+    campaignId?: string;
+    status?: string;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
   }) => api.get(`/workspaces/${workspaceId}/leads`, params),
   getById: (workspaceId: string, id: string) => api.get(`/workspaces/${workspaceId}/leads/${id}`),
-  update: (workspaceId: string, id: string, data: { status?: string; customFields?: Record<string, unknown> }) => 
+  update: (workspaceId: string, id: string, data: { status?: string; customFields?: Record<string, unknown> }) =>
     api.patch(`/workspaces/${workspaceId}/leads/${id}`, data),
   delete: (workspaceId: string, id: string) => api.delete(`/workspaces/${workspaceId}/leads/${id}`),
-  getStats: (workspaceId: string, campaignId?: string) => 
+  getStats: (workspaceId: string, campaignId?: string) =>
     api.get(`/workspaces/${workspaceId}/leads/stats`, { campaignId }),
-  createSources: (workspaceId: string, campaignId: string) => 
+  createSources: (workspaceId: string, campaignId: string) =>
     api.post(`/workspaces/${workspaceId}/leads/${campaignId}/sources`),
-  getSources: (workspaceId: string, campaignId: string) => 
+  getSources: (workspaceId: string, campaignId: string) =>
     api.get(`/workspaces/${workspaceId}/leads/${campaignId}/sources`),
 };
 
@@ -278,7 +286,7 @@ export const trackingApi = {
     page?: number;
     limit?: number;
   }) => api.get(`/workspaces/${workspaceId}/tracking`, params),
-  getCounts: (workspaceId: string, campaignId?: string, startDate?: string, endDate?: string) => 
+  getCounts: (workspaceId: string, campaignId?: string, startDate?: string, endDate?: string) =>
     api.get(`/workspaces/${workspaceId}/tracking/counts`, { campaignId, startDate, endDate }),
 };
 
@@ -289,6 +297,9 @@ export const analyticsApi = {
     endDate?: string;
     groupBy?: 'day' | 'week' | 'month';
     channel?: string;
+    compareEnabled?: boolean;
+    compareStartDate?: string;
+    compareEndDate?: string;
   }) => api.get(`/workspaces/${workspaceId}/analytics/dashboard`, params),
   getCampaignAnalytics: (workspaceId: string, campaignId: string, params?: {
     startDate?: string;
@@ -297,10 +308,14 @@ export const analyticsApi = {
     channel?: string;
   }) => api.get(`/workspaces/${workspaceId}/analytics/campaign/${campaignId}`, params),
   getRealtimeStats: (workspaceId: string) => api.get(`/workspaces/${workspaceId}/analytics/realtime`),
+  getDeviceBreakdown: (workspaceId: string, startDate?: string, endDate?: string) =>
+    api.get(`/workspaces/${workspaceId}/analytics/devices`, { startDate, endDate }),
+  getGeoBreakdown: (workspaceId: string, startDate?: string, endDate?: string) =>
+    api.get(`/workspaces/${workspaceId}/analytics/geo`, { startDate, endDate }),
 };
 
 export const notificationApi = {
-  getAll: (workspaceId: string, params?: { page?: number; limit?: number; isRead?: boolean; type?: string }) => 
+  getAll: (workspaceId: string, params?: { page?: number; limit?: number; isRead?: boolean; type?: string }) =>
     api.get(`/workspaces/${workspaceId}/notifications`, params),
   getUnreadCount: (workspaceId: string) => api.get(`/workspaces/${workspaceId}/notifications/unread-count`),
   markAsRead: (workspaceId: string, id: string) => api.patch(`/workspaces/${workspaceId}/notifications/${id}/read`),
@@ -319,4 +334,10 @@ export const auditLogApi = {
     startDate?: string;
     endDate?: string;
   }) => api.get(`/workspaces/${workspaceId}/audit-logs`, params),
+};
+
+export const emailApi = {
+  sendTest: (to: string, template?: string) => api.post('/email/test', { to, template }),
+  sendCustom: (to: string, subject: string, html?: string, text?: string) =>
+    api.post('/email/send', { to, subject, html, text }),
 };

@@ -36,9 +36,5 @@ prisma/migrations/.migration_lock.toml
 # Docker
 docker-compose.override.yml
 
-# Misc
-*.pem
-.cache/
-.temp/
-tmp/
+# TypeScript
 *.tsbuildinfo

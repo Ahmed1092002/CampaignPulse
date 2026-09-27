@@ -107,7 +107,7 @@ export function DataTable<T>({
 
   if (isLoading) {
     return (
-      <div className={cn('rounded-xl border bg-card', className)}>
+      <div className="rounded-xl border bg-card">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

@@ -161,59 +161,12 @@ export async function changePassword(userId: string, currentPassword: string, ne
   });
 }
 
-export async function getProfile(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      avatarUrl: true,
-      locale: true,
-      createdAt: true,
-      lastLoginAt: true,
-      workspaces: {
-        include: {
-          workspace: {
-            select: { id: true, name: true, slug: true },
-          },
-        },
-      },
-    },
-  });
-
-  if (!user) {
-    throw new NotFoundError('User');
-  }
-
-  return user;
-}
-
-export async function updateProfile(userId: string, data: { firstName?: string; lastName?: string; locale?: string; avatarUrl?: string }) {
-  const user = await prisma.user.update({
-    where: { id: userId },
-    data,
-    select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      avatarUrl: true,
-      locale: true,
-    },
-  });
-
-  return user;
-}
-
 export async function forgotPassword(email: string): Promise<void> {
   const user = await prisma.user.findUnique({ where: { email } });
   
   // Always return success to prevent email enumeration
   if (!user) return;
 
-  // Generate reset token (valid for 1 hour)
   const resetToken = crypto.randomBytes(32).toString('hex');
   const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
 
@@ -223,7 +176,7 @@ export async function forgotPassword(email: string): Promise<void> {
       resetToken,
       resetTokenExpiry,
     },
-  );
+  });
 
   const resetUrl = `${env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
@@ -273,4 +226,50 @@ export async function verifyResetToken(token: string): Promise<boolean> {
   }
 
   return true;
+}
+
+export async function getProfile(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      avatarUrl: true,
+      locale: true,
+      createdAt: true,
+      lastLoginAt: true,
+      workspaces: {
+        include: {
+          workspace: {
+            select: { id: true, name: true, slug: true },
+          },
+        },
+      },
+    },
+  });
+
+  if (!user) {
+    throw new NotFoundError('User');
+  }
+
+  return user;
+}
+
+export async function updateProfile(userId: string, data: { firstName?: string; lastName?: string; locale?: string; avatarUrl?: string }) {
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data,
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      avatarUrl: true,
+      locale: true,
+    },
+  });
+
+  return user;
 }

@@ -186,7 +186,7 @@ export default function CampaignsPage() {
             pageSize,
             total,
             onPageChange: setPage,
-            onPageSizeChange: (size) => { },
+            onPageSizeChange: () => {},
           }}
         />
 

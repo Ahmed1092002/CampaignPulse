@@ -151,18 +151,6 @@ export async function getPublicLandingPage(campaignSlug: string) {
   return { campaign, landingPage: campaign.landingPage };
 }
 
-export async function getPublishedCampaigns() {
-  const campaigns = await prisma.campaign.findMany({
-    where: { 
-      status: 'PUBLISHED',
-      landingPage: { isPublished: true }
-    },
-    select: { slug: true },
-  });
-
-  return campaigns;
-}
-
 export async function duplicateLandingPage(workspaceId: string, userId: string, campaignId: string, targetCampaignId: string) {
   const membership = await prisma.workspaceMember.findUnique({
     where: { userId_workspaceId: { userId, workspaceId } },

@@ -58,8 +58,8 @@ export function TopCampaigns() {
                     +12%
                   </p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </CardContent>

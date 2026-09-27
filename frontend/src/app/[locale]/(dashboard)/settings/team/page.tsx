@@ -2,24 +2,25 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react_query';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Input'
-import { Badge } from '@/components/ui/Badge';
-import { api } from '@/lib/api';
-import { useAuthStore } from '@/store/authStore';
-import { formatDate } from '@/lib/utils';
-import { UserPlus, Mail, Trash2, Loader2, Shield, Crown, User, Eye, Edit2 } from 'lucide-react';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/DropdownMenu';
-import { Modal, ConfirmModal } from '@/components/ui/Modal';
-import { useTranslations } from 'next-intl';
-import { toast } from 'sonner';
+import { zodResolver } from '@hookform/resolvers/zod'.
+import { z } from 'zod'.
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'.
+import { DashboardLayout } from '@/components/layout/DashboardLayout'.
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'.
+import { Button } from '@/components/ui/Button'.
+import { Input } from '@/components/ui/Input'.
+import { Textarea } from '@/components/ui/Input'.
+import { Select } from '@/components/ui/Input'.
+import { Switch } from '@/components/ui/Switch'.
+import { Badge } from '@/components/ui/Badge'.
+import { api } from '@/lib/api'.
+import { useAuthStore } from '@/store/authStore'.
+import { formatDate } from '@/lib/utils'.
+import { UserPlus, Mail, Trash2, Loader2, Shield, Crown, User, Eye, Edit2 } from 'lucide-react'.
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/DropdownMenu'.
+import { Modal, ConfirmModal } from '@/components/ui/Modal'.
+import { useTranslations } from 'next-intl'.
+import { toast } from 'sonner'.
 
 const inviteSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -44,8 +45,6 @@ export default function TeamSettingsPage() {
   const { workspaceId, user, workspaces, switchWorkspace } = useAuthStore();
   const queryClient = useQueryClient();
   const t = useTranslations('settings');
-  const currentWorkspace = workspaces.find(w => w.workspace.id === workspaceId);
-
   const [inviteOpen, setInviteOpen] = useState(false);
   const [removeMemberId, setRemoveMemberId] = useState<string | null>(null);
   const [leaveOpen, setLeaveOpen] = useState(false);
@@ -136,7 +135,7 @@ export default function TeamSettingsPage() {
               <div className="space-y-4">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <div key={i} className="h-16 animate-pulse bg-muted rounded" />
-                ))}
+                )}
               </div>
             ) : (
               <div className="space-y-4">
@@ -206,83 +205,83 @@ export default function TeamSettingsPage() {
                   </div>
                 )}
               </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {!currentWorkspace?.workspace?.role || currentWorkspace?.role === 'ADMIN' ? (
-          <Card className="border-destructive">
-            <CardHeader>
-              <CardTitle className="text-destructive flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                {t('dangerZone') || 'Danger Zone'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="flex items-center justify-between p-4 bg-destructive/10 rounded-lg">
-                <div>
-                  <p className="font-medium text-destructive">{t('leaveWorkspace')}</p>
-                  <p className="text-sm text-muted-foreground">{t('confirmLeave')}</p>
-                </div>
-                <Button variant="destructive" onClick={() => setLeaveOpen(true)}>
-                  {t('leaveWorkspace')}
-                </Button>
-              </div>
             </CardContent>
           </Card>
-        ) : null}
+
+          {!currentWorkspace?.workspace?.role || currentWorkspace?.role === 'ADMIN' ? (
+            <Card className="border-destructive">
+              <CardHeader>
+                <CardTitle className="text-destructive flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  {t('dangerZone') || 'Danger Zone'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="flex items-center justify-between p-4 bg-destructive/10 rounded-lg">
+                  <div>
+                    <p className="font-medium text-destructive">{t('leaveWorkspace')}</p>
+                    <p className="text-sm text-muted-foreground">{t('confirmLeave')}</p>
+                  </div>
+                  <Button variant="destructive" onClick={() => setLeaveOpen(true)}>
+                    {t('leaveWorkspace')}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : null}
+        </div>
+
+        <Modal isOpen={inviteOpen} onClose={() => setInviteOpen(false)} title={t('inviteMember')}>
+          <form onSubmit={inviteForm.handleSubmit(handleInvite)} className="space-y-4">
+            <Input
+              label={t('memberEmail')}
+              type="email"
+              placeholder="member@example.com"
+              {...inviteForm.register('email')}
+              error={inviteForm.formState.errors.email?.message}
+            />
+            <Select
+              label={t('memberRole')}
+              value={inviteForm.watch('role')}
+              onChange={(e) => inviteForm.setValue('role', e.target.value as any)}
+              options={[
+                { value: 'ADMIN', label: t('roleAdmin') },
+                { value: 'MARKETER', label: t('roleMarketer') },
+                { value: 'VIEWER', label: t('roleViewer') },
+              ]}
+            />
+            <div className="flex justify-end gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={() => setInviteOpen(false)}>{t('cancel')}</Button>
+              <Button type="submit" disabled={inviteMutation.isPending}>
+                {inviteMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                {t('inviteMember')}
+              </Button>
+            </div>
+          </form>
+        </Modal>
+
+        <ConfirmModal
+          isOpen={!!removeMemberId}
+          onClose={() => setRemoveMemberId(null)}
+          onConfirm={() => removeMutation.mutate(removeMemberId!)}
+          title={t('removeMember')}
+          message={t('confirmRemove')}
+          confirmText={t('removeMember')}
+          cancelText={t('cancel')}
+          variant="danger"
+        />
+
+        <ConfirmModal
+          isOpen={leaveOpen}
+          onClose={() => setLeaveOpen(false)}
+          onConfirm={() => leaveMutation.mutate()}
+          title={t('leaveWorkspace')}
+          message={t('confirmLeave')}
+          confirmText={t('leaveWorkspace')}
+          cancelText={t('cancel')}
+          variant="danger"
+        />
       </div>
-
-      <Modal isOpen={inviteOpen} onClose={() => setInviteOpen(false)} title={t('inviteMember')}>
-        <form onSubmit={inviteForm.handleSubmit(handleInvite)} className="space-y-4">
-          <Input
-            label={t('memberEmail')}
-            type="email"
-            placeholder="member@example.com"
-            {...inviteForm.register('email')}
-            error={inviteForm.formState.errors.email?.message}
-          />
-          <Select
-            label={t('memberRole')}
-            value={inviteForm.watch('role')}
-            onChange={(e) => inviteForm.setValue('role', e.target.value as any)}
-            options={[
-              { value: 'ADMIN', label: t('roleAdmin') },
-              { value: 'MARKETER', label: t('roleMarketer') },
-              { value: 'VIEWER', label: t('roleViewer') },
-            ]}
-          />
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setInviteOpen(false)}>{t('cancel')}</Button>
-            <Button type="submit" disabled={inviteMutation.isPending}>
-              {inviteMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {t('inviteMember')}
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-      <ConfirmModal
-        isOpen={!!removeMemberId}
-        onClose={() => setRemoveMemberId(null)}
-        onConfirm={() => removeMutation.mutate(removeMemberId!)}
-        title={t('removeMember')}
-        message={t('confirmRemove')}
-        confirmText={t('removeMember')}
-        cancelText={t('cancel')}
-        variant="danger"
-      />
-
-      <ConfirmModal
-        isOpen={leaveOpen}
-        onClose={() => setLeaveOpen(false)}
-        onConfirm={() => leaveMutation.mutate()}
-        title={t('leaveWorkspace')}
-        message={t('confirmLeave')}
-        confirmText={t('leaveWorkspace')}
-        cancelText={t('cancel')}
-        variant="danger"
-      />
     </DashboardLayout>
   );
 }

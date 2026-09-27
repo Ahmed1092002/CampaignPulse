@@ -89,9 +89,9 @@ export function Sidebar() {
               </div>
               {sidebarOpen && !isMobile && (
                 <div className="flex items-center gap-2">
-                  <Link href="/settings/profile" className="p-2 rounded-lg hover:bg-accent transition-colors" aria-label="Profile settings">
+                  <a href="/settings/profile" className="p-2 rounded-lg hover:bg-accent transition-colors" aria-label="Profile settings">
                     <Settings className="h-5 w-5" />
-                  </Link>
+                  </a>
                 </div>
               )}
             </div>

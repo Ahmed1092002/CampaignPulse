@@ -1,22 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { Fragment, ReactNode, useRef, useState } from 'react';
+import { Portal } from './Portal';
 import { cn } from '@/lib/utils';
-
-interface TabsContextType {
-  value: string;
-  onValueChange: (value: string) => void;
-}
-
-const TabsContext = createContext<TabsContextType | null>(null);
-
-function useTabsContext() {
-  const context = useContext(TabsContext);
-  if (!context) {
-    throw new Error('Tabs components must be used within Tabs');
-  }
-  return context;
-}
 
 interface TabsProps {
   value: string;
@@ -33,6 +19,16 @@ export function Tabs({ value, onValueChange, children, className }: TabsProps) {
   );
 }
 
+const TabsContext = createContext<{ value: string; onValueChange: (value: string) => void } | null>(null);
+
+function useTabsContext() {
+  const context = useContext(TabsContext);
+  if (!context) {
+    throw new Error('Tabs components must be used within Tabs');
+  }
+  return context;
+}
+
 interface TabsListProps {
   children: ReactNode;
   className?: string;
@@ -40,9 +36,9 @@ interface TabsListProps {
 
 export function TabsList({ children, className }: TabsListProps) {
   return (
-    <div 
-      role="tablist" 
-      aria-orientation="horizontal" 
+    <div
+      role="tablist"
+      aria-orientation="horizontal"
       className={cn(
         'inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground',
         className

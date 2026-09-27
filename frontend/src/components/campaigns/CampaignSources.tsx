@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react_query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react_query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -23,6 +23,7 @@ export function CampaignSources({ campaignId }: CampaignSourcesProps) {
   const { workspaceId } = useAuthStore();
   const t = useTranslations('campaigns');
   const [showQr, setShowQr] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const { data: sourcesData, isLoading, refetch } = useQuery({
     queryKey: ['campaign-sources', workspaceId, campaignId],
@@ -34,10 +35,10 @@ export function CampaignSources({ campaignId }: CampaignSourcesProps) {
     mutationFn: () => api.lead.createSources(workspaceId!, campaignId),
     onSuccess: () => {
       refetch();
-      toast.success(t('sourcesCreated'));
+      toast.success(t('sourcesCreated') || 'UTM sources generated successfully');
     },
     onError: () => {
-      toast.error(t('error'));
+      toast.error(t('error') || 'Error generating sources');
     },
   });
 
@@ -136,5 +137,3 @@ export function CampaignSources({ campaignId }: CampaignSourcesProps) {
     </Card>
   );
 }
-
-import { useMutation } from '@tanstack/react_query';

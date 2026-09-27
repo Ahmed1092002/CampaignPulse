@@ -1,8 +1,7 @@
 'use client';
 
 import { HTMLAttributes, forwardRef } from 'react';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@/lib/utils';
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'outline';
@@ -22,7 +21,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
     return (
       <span
         ref={ref}
-        className={twMerge(
+        className={cn(
           'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors',
           variants[variant],
           className

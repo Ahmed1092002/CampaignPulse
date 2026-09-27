@@ -20,7 +20,7 @@ interface StatCardProps {
 }
 
 function StatCard({ title, value, change, changeLabel, icon: Icon, iconColor, trend = 'neutral' }: StatCardProps) {
-  const t = useTranslations('common');
+  const t = useTranslations('dashboard');
   
   return (
     <Card>

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from '../../middleware/validate';
 import { authenticate, requireWorkspace, requireViewer } from '../../middleware/auth';
 import * as trackingController from './tracking.controller';
-import { apiRateLimiter, trackingRateLimiter } from '../../middleware/rateLimiter';
+import { apiRateLimiter, trackingRateLimiter } from '../../middleware/rateLimiter;
 
 const router = Router();
 

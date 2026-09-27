@@ -25,6 +25,8 @@ const envSchema = z.object({
   SMTP_PASS: z.string().optional(),
   SMTP_FROM: z.string().optional(),
 
+  CRM_WEBHOOK_URL: z.string().optional(),
+
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly']).default('info'),
 
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(900000),

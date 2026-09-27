@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react_query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';

@@ -5,10 +5,9 @@ vi.mock('@prisma/client', () => {
   const mockPrisma = {
     user: {
       findUnique: vi.fn(),
-      findMany: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
-      delete: vi.fn(),
+      findMany: vi.fn(),
       count: vi.fn(),
     },
     workspace: {
@@ -34,6 +33,7 @@ vi.mock('@prisma/client', () => {
       update: vi.fn(),
       delete: vi.fn(),
       count: vi.fn(),
+      groupBy: vi.fn(),
     },
     landingPage: {
       findUnique: vi.fn(),
@@ -41,7 +41,6 @@ vi.mock('@prisma/client', () => {
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
-      count: vi.fn(),
     },
     lead: {
       findUnique: vi.fn(),
@@ -65,8 +64,6 @@ vi.mock('@prisma/client', () => {
       findMany: vi.fn(),
       create: vi.fn(),
       createMany: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
       count: vi.fn(),
       groupBy: vi.fn(),
     },
@@ -93,24 +90,17 @@ vi.mock('@prisma/client', () => {
 
   return {
     PrismaClient: vi.fn(() => mockPrisma),
+    default: mockPrisma,
   };
 });
 
-vi.mock('ioredis', () => {
-  return {
-    default: vi.fn().mockImplementation(() => ({
-      connect: vi.fn(),
-      quit: vi.fn(),
-      on: vi.fn(),
-      get: vi.fn(),
-      set: vi.fn(),
-      del: vi.fn(),
-      incr: vi.fn(),
-      expire: vi.fn(),
-      keys: vi.fn(),
-    })),
-  };
-});
+vi.mock('../src/config/redis', () => ({
+  default: {
+    connect: vi.fn(),
+    quit: vi.fn(),
+    on: vi.fn(),
+  },
+}));
 
 vi.mock('bullmq', () => {
   return {
@@ -123,7 +113,7 @@ vi.mock('bullmq', () => {
     Worker: vi.fn().mockImplementation(() => ({
       on: vi.fn(),
     })),
-  };
+  });
 });
 
 vi.mock('socket.io', () => {
@@ -142,7 +132,7 @@ vi.mock('jsonwebtoken', () => {
     sign: vi.fn(() => 'mock-token'),
     verify: vi.fn(() => ({ userId: 'test-user-id', email: 'test@test.com', type: 'access' })),
     decode: vi.fn(() => ({ userId: 'test-user-id', email: 'test@test.com', type: 'access', exp: Date.now() / 1000 + 3600 })),
-  };
+  });
 });
 
 vi.mock('bcryptjs', () => {

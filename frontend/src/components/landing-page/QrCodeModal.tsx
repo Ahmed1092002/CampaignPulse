@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
-import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
-import { X, Download } from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
-import { useTranslations } from 'next-intl';
+import { useEffect } from 'react'.
+import { QRCodeSVG } from 'qrcode.react'.
+import { Button } from '@/components/ui/Button'.
+import { cn } from '@/lib/utils'.
+import { X, Download } from 'lucide-react'.
+import { Modal } from '@/components/ui/Modal'.
+import { useTranslations } from 'next-intl'.
 
 interface QrCodeModalProps {
   isOpen: boolean;

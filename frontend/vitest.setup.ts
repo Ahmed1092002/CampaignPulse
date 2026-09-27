@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
+import { JSDOM } from 'jsdom';
 
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
@@ -41,6 +42,13 @@ vi.mock('lucide-react', () => {
   return icons;
 });
 
+// Mock cookies-next
+vi.mock('cookies-next', () => ({
+  getCookie: vi.fn(),
+  setCookie: vi.fn(),
+  deleteCookie: vi.fn(),
+}));
+
 // Mock recharts
 vi.mock('recharts', () => ({
   LineChart: ({ children, ...props }: any) => <div data-testid="line-chart" {...props}>{children}</div>,
@@ -59,44 +67,6 @@ vi.mock('recharts', () => ({
   ResponsiveContainer: ({ children, ...props }: any) => <div data-testid="responsive-container" {...props}>{children}</div>,
 }));
 
-// Mock cookies-next
-vi.mock('cookies-next', () => ({
-  getCookie: vi.fn(),
-  setCookie: vi.fn(),
-  deleteCookie: vi.fn(),
-}));
-
-// Mock zustand
-vi.mock('zustand', () => ({
-  create: (fn: any) => {
-    let state = fn(set => ({ ...fn(set) }), () => state);
-    const setState = (partial: any) => {
-      state = typeof partial === 'function' ? partial(state) : { ...state, ...partial };
-    };
-    const getState = () => state;
-    return Object.assign(
-      (selector: any) => selector(state),
-      { getState, setState, subscribe: vi.fn(), destroy: vi.fn() }
-    );
-  },
-}));
-
-// Mock TanStack Query
-vi.mock('@tanstack/react-query', () => ({
-  useQuery: vi.fn(() => ({ data: undefined, isLoading: false, error: null, refetch: vi.fn() })),
-  useMutation: vi.fn(() => ({ mutate: vi.fn(), mutateAsync: vi.fn(), isPending: false, isError: false, isSuccess: false, error: null })),
-  useQueryClient: vi.fn(() => ({
-    invalidateQueries: vi.fn(),
-    setQueryData: vi.fn(),
-    getQueryData: vi.fn(),
-  })),
-  QueryClient: vi.fn(() => ({
-    getQueryCache: vi.fn(),
-    getMutationCache: vi.fn(),
-  })),
-  QueryClientProvider: ({ children }: any) => children,
-}));
-
 Object.defineProperty(global, 'IntersectionObserver', {
   writable: true,
   value: vi.fn().mockImplementation(() => ({
@@ -113,4 +83,4 @@ Object.defineProperty(global, 'ResizeObserver', {
     unobserve: vi.fn(),
     disconnect: vi.fn(),
   })),
-});
+);

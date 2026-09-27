@@ -22,7 +22,6 @@ export async function createLead(workspaceId: string, input: CreateLeadInput, me
     throw new AuthorizationError('Campaign is not published');
   }
 
-  // Check for duplicate lead by email or phone
   const existingLead = await prisma.lead.findFirst({
     where: {
       workspaceId,
@@ -34,7 +33,6 @@ export async function createLead(workspaceId: string, input: CreateLeadInput, me
   });
 
   if (existingLead) {
-    // Update existing lead with new data
     const updated = await prisma.lead.update({
       where: { id: existingLead.id },
       data: {
@@ -55,7 +53,6 @@ export async function createLead(workspaceId: string, input: CreateLeadInput, me
     return { lead: updated, isDuplicate: true };
   }
 
-  // Find matching source
   let sourceId: string | undefined;
   if (input.utmSource && input.utmMedium && input.utmCampaign) {
     const source = await prisma.campaignSource.findFirst({
@@ -102,7 +99,6 @@ export async function createLead(workspaceId: string, input: CreateLeadInput, me
     userAgent: input.userAgent,
   });
 
-  // Send new lead notification email to workspace admins/marketers
   const adminsAndMarketers = await prisma.workspaceMember.findMany({
     where: { workspaceId, role: { in: ['ADMIN', 'MARKETER'] } },
     include: { user: { select: { email: true, firstName: true, lastName: true } } },
@@ -128,7 +124,6 @@ export async function createLead(workspaceId: string, input: CreateLeadInput, me
   }
 
   return { lead, isDuplicate: false };
-}
 }
 
 export async function getLeads(workspaceId: string, userId: string, params: {
@@ -248,7 +243,6 @@ export async function updateLead(workspaceId: string, userId: string, leadId: st
       newData: { status: input.status },
     });
 
-    // Send lead status change notification
     const adminsAndMarketers = await prisma.workspaceMember.findMany({
       where: { workspaceId, role: { in: ['ADMIN', 'MARKETER'] } },
       include: { user: { select: { email: true, firstName: true, lastName: true } } },
@@ -259,7 +253,7 @@ export async function updateLead(workspaceId: string, userId: string, leadId: st
       select: { name: true },
     });
 
-    const leadUrl = `${env.FRONTEND_URL}/leads/${leadId}`;
+    const leadUrl = `${process.env.FRONTEND_URL}/leads/${leadId}`;
 
     for (const member of adminsAndMarketers) {
       await emailService.send({

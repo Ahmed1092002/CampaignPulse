@@ -56,7 +56,6 @@ export async function changePassword(req: AuthenticatedRequest, res: Response) {
 export async function forgotPassword(req: AuthenticatedRequest, res: Response) {
   const { email } = req.body;
   await authService.forgotPassword(email);
-  // Always return success to prevent email enumeration
   res.json(successResponse({ message: 'If the email exists, a reset link has been sent' }));
 }
 

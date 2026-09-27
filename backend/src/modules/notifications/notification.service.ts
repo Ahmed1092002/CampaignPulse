@@ -26,7 +26,6 @@ export async function createNotification(data: {
     },
   });
 
-  // Send email if requested and user has email notifications enabled
   if (data.sendEmail && data.emailTemplate) {
     const user = await prisma.user.findUnique({
       where: { id: data.userId },
@@ -73,7 +72,6 @@ export async function createBulkNotifications(notifications: Array<{
     })),
   });
 
-  // Send emails for notifications that request it
   for (const notification of notifications) {
     if (notification.sendEmail && notification.emailTemplate) {
       const user = await prisma.user.findUnique({

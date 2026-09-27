@@ -1,21 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react_query';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Input';
-import { Switch } from '@/components/ui/Switch';
-import { api } from '@/lib/api';
-import { useAuthStore } from '@/store/authStore';
-import { Loader2, Save, Image, Trash2 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { toast } from 'sonner';
+import { useForm } from 'react-hook-form'.
+import { zodResolver } from '@hookform/resolvers/zod'.
+import { z } from 'zod'.
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'.
+import { DashboardLayout } from '@/components/layout/DashboardLayout'.
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'.
+import { Button } from '@/components/ui/Button'.
+import { Input } from '@/components/ui/Input'.
+import { Textarea } from '@/components/ui/Input'.
+import { Switch } from '@/components/ui/Switch'.
+import { api } from '@/lib/api'.
+import { useAuthStore } from '@/store/authStore'.
+import { Loader2, Save, Image, Trash2 } from 'lucide-react'.
+import { useTranslations } from 'next-intl'.
+import { toast } from 'sonner'.
 
 const workspaceSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
@@ -249,4 +249,4 @@ function SettingToggle({ label, description, checked, onChange }: { label: strin
   );
 }
 
-import { Switch } from '@/components/ui/Switch';
+import { Image } from 'lucide-react';

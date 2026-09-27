@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from '../../middleware/validate';
 import { authenticate, requireWorkspace, requireMarketer, requireAdmin } from '../../middleware/auth';
 import * as leadController from './lead.controller';
-import { apiRateLimiter, publicFormRateLimiter } from '../../middleware/rateLimiter';
+import { apiRateLimiter, publicFormRateLimiter } from '../../middleware/rateLimiter;
 
 const router = Router({ mergeParams: true });
 

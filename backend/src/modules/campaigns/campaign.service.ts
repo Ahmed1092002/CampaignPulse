@@ -167,14 +167,13 @@ export async function updateCampaign(workspaceId: string, userId: string, campai
     newData: { name: updated.name, status: updated.status, description: updated.description },
   });
 
-  // Send campaign published email notification
-  if (input.status === CampaignStatus.PUBLISHED && oldData.status !== CampaignStatus.PUBLISHED) {
+  if (input.status === CampaignStatus.PUBLISHED && campaign.status !== CampaignStatus.PUBLISHED) {
     const adminsAndMarketers = await prisma.workspaceMember.findMany({
       where: { workspaceId, role: { in: ['ADMIN', 'MARKETER'] } },
       include: { user: { select: { email: true, firstName: true, lastName: true } } },
     });
 
-    const publicUrl = `${env.FRONTEND_URL}/p/${updated.slug}`;
+    const publicUrl = `${process.env.FRONTEND_URL}/p/${updated.slug}`;
 
     for (const member of adminsAndMarketers) {
       await emailService.send({

@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { ApiResponse, PaginationParams, PaginatedResponse } from '../types';
 
 export function successResponse<T>(data: T, meta?: PaginatedResponse<T>['meta']): ApiResponse<T> {

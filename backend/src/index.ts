@@ -62,8 +62,8 @@ setupSwagger(app);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/workspaces', workspaceRoutes);
-app.use('/api/users', userRoutes);
 app.use('/api/workspaces/:workspaceId/members', memberRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/workspaces/:workspaceId/campaigns', campaignRoutes);
 app.use('/api/workspaces/:workspaceId/landing-pages', landingPageRoutes);
 app.use('/api/workspaces/:workspaceId/leads', leadRoutes);

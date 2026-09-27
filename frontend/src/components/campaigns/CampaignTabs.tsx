@@ -6,9 +6,8 @@ import { useParams, usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Badge, getStatusBadge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { Target, LayoutDashboard, Users, BarChart2, Edit, ExternalLink, Copy } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/DropdownMenu';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Trash2 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 
@@ -74,10 +73,19 @@ export function CampaignTabs({ campaign }: CampaignTabsProps) {
               <DropdownMenuItem asChild icon={<Edit className="h-4 w-4" />}>
                 <Link href={`/campaigns/${campaign.id}`}>{t('edit')}</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild icon={<ExternalLink className="h-4 w-4" />}>
+                <Link href={`/campaigns/${campaign.id}/builder`}>{t('landingPage')}</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild icon={<ExternalLink className="h-4 w-4" />}>
+                <Link href={`/campaigns/${campaign.id}/analytics`}>{t('analytics')}</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild icon={<ExternalLink className="h-4 w-4" />}>
+                <Link href={`/p/${campaign.slug}`} target="_blank">{t('publicUrl')}</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {}} icon={<Copy className="h-4 w-4" />}>
                 {t('duplicate')}
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
               {campaign.status === 'DRAFT' && (
                 <DropdownMenuItem onClick={() => {}} icon={<ExternalLink className="h-4 w-4" />}>
                   {t('publish')}
@@ -86,7 +94,7 @@ export function CampaignTabs({ campaign }: CampaignTabsProps) {
               {campaign.status === 'PUBLISHED' && (
                 <DropdownMenuItem onClick={() => {}} icon={<Trash2 className="h-4 w-4" />} className="text-orange-600">
                   {t('pause')}
-                </DropdownMenuItem>
+                </DropdownMenuItem)
               )}
             </DropdownMenuContent          </DropdownMenu>
           <Button asChild variant="outline" size="sm">
@@ -124,4 +132,4 @@ export function CampaignTabs({ campaign }: CampaignTabsProps) {
   );
 }
 
-import { Trash2 } from 'lucide-react';
+import { LayoutDashboard, Users, BarChart2, Target, Edit, ExternalLink, Copy, Trash2 } from 'lucide-react';

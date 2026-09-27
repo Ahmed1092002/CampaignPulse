@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting seed...');
 
-  // Create demo users
   const passwordHash = await bcrypt.hash('password123', 12);
 
   const adminUser = await prisma.user.upsert({
@@ -47,7 +46,6 @@ async function main() {
 
   console.log('✅ Created demo users');
 
-  // Create demo workspace
   const workspace = await prisma.workspace.upsert({
     where: { slug: 'demo-workspace' },
     update: {},
@@ -71,7 +69,6 @@ async function main() {
 
   console.log('✅ Created demo workspace');
 
-  // Add members to workspace
   await prisma.workspaceMember.upsert({
     where: { userId_workspaceId: { userId: adminUser.id, workspaceId: workspace.id } },
     update: { role: UserRole.ADMIN },
@@ -92,7 +89,6 @@ async function main() {
 
   console.log('✅ Added members to workspace');
 
-  // Create demo campaigns
   const campaign1 = await prisma.campaign.upsert({
     where: { workspaceId_slug: { workspaceId: workspace.id, slug: 'summer-sale-2024' } },
     update: {},
@@ -130,7 +126,6 @@ async function main() {
 
   console.log('✅ Created demo campaigns');
 
-  // Create landing pages for campaigns
   const defaultLandingPage = {
     hero: {
       headline: 'Welcome to Our Campaign',
@@ -192,7 +187,6 @@ async function main() {
 
   console.log('✅ Created landing pages');
 
-  // Create UTM sources for campaign1
   const channels = [
     { channel: 'facebook', name: 'Facebook', utmSource: 'facebook', utmMedium: 'social', utmCampaign: campaign1.slug },
     { channel: 'instagram', name: 'Instagram', utmSource: 'instagram', utmMedium: 'social', utmCampaign: campaign1.slug },
@@ -213,7 +207,6 @@ async function main() {
 
   console.log('✅ Created UTM sources');
 
-  // Create demo leads
   const leadStatuses = ['NEW', 'CONTACTED', 'QUALIFIED', 'WON', 'LOST'];
   const sources = ['facebook/social', 'instagram/social', 'google/cpc', 'direct/direct'];
 
@@ -231,13 +224,11 @@ async function main() {
         utmMedium: sources[Math.floor(Math.random() * sources.length)].split('/')[1],
         utmCampaign: campaign1.slug,
         customFields: { company: `Company ${i + 1}`, interest: 'Product Demo' },
-      },
-    });
-  }
+      });
+    }
 
   console.log('✅ Created demo leads');
 
-  // Create demo tracking events
   const eventTypes = ['PAGE_VIEW', 'CTA_CLICK', 'FORM_START', 'FORM_SUBMIT'];
   const sessionIds = Array.from({ length: 50 }, () => Math.random().toString(36).substr(2, 16));
 
@@ -258,7 +249,6 @@ async function main() {
 
   console.log('✅ Created demo tracking events');
 
-  // Create audit logs
   await prisma.auditLog.createMany({
     data: [
       {

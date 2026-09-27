@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { formatDate, formatCurrency, formatNumber } from '@/lib/utils';
-import { Calendar, DollarSign, Hash, Globe, Users } from 'lucide-react';
+import { Calendar, DollarSign, Hash, Globe, Users, Target, CheckCircle, Clock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 interface CampaignOverviewProps {
@@ -200,4 +200,4 @@ export function CampaignOverview({ campaign }: CampaignOverviewProps) {
   );
 }
 
-import { Target, CheckCircle, Clock } from 'lucide-react';
+import { Target, CheckCircle, Clock, LayoutDashboard, Users, BarChart2, Edit, ExternalLink, Copy } from 'lucide-react';

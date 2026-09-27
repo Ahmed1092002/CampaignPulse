@@ -24,11 +24,6 @@ export async function getPublicLandingPage(req: AuthenticatedRequest, res: Respo
   res.json(successResponse(result));
 }
 
-export async function getPublishedCampaigns(req: AuthenticatedRequest, res: Response) {
-  const campaigns = await landingPageService.getPublishedCampaigns();
-  res.json(successResponse(campaigns));
-}
-
 export async function duplicateLandingPage(req: AuthenticatedRequest, res: Response) {
   if (!req.user || !req.workspaceId) throw new Error('User or workspace not set');
   const { campaignId } = req.params;

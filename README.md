@@ -12,6 +12,7 @@ A multi-tenant campaign analytics and lead-management platform for marketing tea
 - **Lead Management** - Dynamic forms, duplicate detection, status tracking (New → Won/Lost)
 - **Real-time Analytics** - Visits, conversions, funnel, trends, source attribution
 - **Real-time Updates** - Socket.IO for live lead notifications and dashboard updates
+- **Background Jobs** - BullMQ workers for analytics, notifications, CRM webhooks
 - **Audit Logging** - Track all important actions across workspaces
 - **Internationalization** - English & Arabic with RTL/LTR support
 - **Dark Mode** - Full dark mode support across the application
@@ -20,14 +21,14 @@ A multi-tenant campaign analytics and lead-management platform for marketing tea
 - **Backend**: Node.js, Express, TypeScript, PostgreSQL, Prisma ORM
 - **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS, TanStack Query, Zustand
 - **Real-time**: Socket.IO with JWT authentication
-- **Background Jobs**: BullMQ with Redis for analytics aggregation, notifications, CRM webhooks
+- **Background Jobs**: BullMQ with Redis for analytics, notifications, CRM webhooks
 - **Authentication**: JWT access/refresh tokens with secure HTTP-only cookies
 - **Rate Limiting**: Per-endpoint rate limiting for auth, forms, and tracking
 - **API Documentation**: Swagger/OpenAPI auto-generated
 - **Testing**: Vitest, React Testing Library, Supertest
 - **CI/CD**: GitHub Actions with linting, type-checking, testing, and Docker builds
 
-## 📋 Tech Stack
+## 🛠️ Tech Stack
 
 ### Backend
 - **Runtime**: Node.js 20+
@@ -137,6 +138,7 @@ CampaignPulse/
 │   │       ├── analytics/    # Analytics & reporting
 │   │       ├── notifications/ # Notifications
 │   │       ├── audit-logs/   # Audit logging
+│   │       ├── email/        # Email service + templates
 │   │       └── jobs/         # Background jobs (BullMQ)
 │   ├── prisma/
 │   │   ├── schema.prisma     # Database schema
@@ -162,7 +164,7 @@ CampaignPulse/
 │   │   └── messages/         # i18n translations (en.json, ar.json)
 │   └── public/               # Static assets
 ├── docker-compose.yml
-└── .github/workflows/        # CI/CD pipelines
+└── README.md
 ```
 
 ## 🔑 Environment Variables

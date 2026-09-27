@@ -6,11 +6,12 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
+import { useMutation } from '@tanstack/react_query';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { api } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
 import { Loader2, Lock, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
@@ -187,3 +188,13 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+
+const resetPasswordSchema = z.object({
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
+});
+
+type ResetPasswordData = z.infer<typeof resetPasswordSchema>;

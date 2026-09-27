@@ -22,8 +22,6 @@ new Worker('analytics', async (job: Job) => {
   const { workspaceId, campaignId, eventType, sessionId, leadId } = job.data;
 
   try {
-    // This worker can be used for real-time analytics updates
-    // For now, we'll just log the event
     logger.debug('Processing analytics event', { workspaceId, campaignId, eventType });
   } catch (error) {
     logger.error('Analytics worker error', { error, jobId: job.id });
@@ -60,7 +58,6 @@ new Worker('leads', async (job: Job) => {
 
   try {
     if (action === 'deduplicate') {
-      // Additional deduplication logic can go here
       logger.debug('Processing lead deduplication', { leadId });
     } else if (action === 'crm_webhook') {
       const lead = await prisma.lead.findUnique({
@@ -69,7 +66,6 @@ new Worker('leads', async (job: Job) => {
       });
 
       if (lead && lead.status === LeadStatus.QUALIFIED) {
-        // Simulate CRM webhook delivery
         await simulateCrmWebhook(lead);
       }
     }
@@ -89,7 +85,6 @@ new Worker('summaries', async (job: Job) => {
     const nextDay = new Date(targetDate);
     nextDay.setDate(nextDay.getDate() + 1);
 
-    // Generate daily summaries for all campaigns in workspace
     const campaigns = await prisma.campaign.findMany({
       where: { workspaceId, status: 'PUBLISHED' },
       select: { id: true },
@@ -113,15 +108,13 @@ new Worker('summaries', async (job: Job) => {
 
       totalVisits += stats.totalVisits;
       totalLeads += stats.totalLeads;
-      totalNewLeads += stats.totalLeads; // For daily, all leads are "new"
+      totalNewLeads += stats.totalLeads;
 
-      // Store or send summary (could be emailed, stored in DB, etc.)
       logger.info('Daily summary generated', { workspaceId, campaignId: campaign.id, stats });
     }
 
     const conversionRate = totalVisits > 0 ? (totalLeads / totalVisits) * 100 : 0;
 
-    // Send daily summary email to workspace admins
     const admins = await prisma.workspaceMember.findMany({
       where: { workspaceId, role: 'ADMIN' },
       include: { user: { select: { email: true, firstName: true, lastName: true } } },
@@ -167,7 +160,6 @@ new Worker('webhooks', async (job: Job) => {
   } catch (error) {
     logger.error('Webhook worker error', { error, jobId: job.id, url });
     if (retries < 3) {
-      // Retry with exponential backoff
       await webhookQueue.add('deliver', { url, payload, retries: retries + 1 }, {
         delay: Math.pow(2, retries) * 1000,
       });
@@ -229,7 +221,6 @@ export async function queueDailySummary(workspaceId: string, date?: Date) {
 }
 
 export async function scheduleDailySummaries() {
-  // Schedule daily summaries for all active workspaces
   const workspaces = await prisma.workspace.findMany({
     where: { isActive: true },
     select: { id: true },

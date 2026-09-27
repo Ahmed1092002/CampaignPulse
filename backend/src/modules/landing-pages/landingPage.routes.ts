@@ -2,13 +2,12 @@ import { Router } from 'express';
 import { validate } from '../../middleware/validate';
 import { authenticate, requireWorkspace, requireMarketer } from '../../middleware/auth';
 import * as landingPageController from './landingPage.controller';
-import { apiRateLimiter, publicFormRateLimiter } from '../../middleware/rateLimiter';
+import { apiRateLimiter, publicFormRateLimiter } from '../../middleware/rateLimiter;
 
 const router = Router({ mergeParams: true });
 
 // Public route - no auth required
 router.get('/public/:slug', publicFormRateLimiter, landingPageController.getPublicLandingPage);
-router.get('/public/published-campaigns', publicFormRateLimiter, landingPageController.getPublishedCampaigns);
 
 // Protected routes
 router.use(authenticate);

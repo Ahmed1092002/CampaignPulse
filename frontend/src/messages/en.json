@@ -68,7 +68,28 @@
     "invalidCredentials": "Invalid email or password",
     "emailExists": "Email already registered",
     "passwordMismatch": "Passwords do not match",
-    "weakPassword": "Password must be at least 8 characters"
+    "weakPassword": "Password must be at least 8 characters",
+    "forgotPasswordTitle": "Forgot Password",
+    "forgotPasswordSubtitle": "Enter your email to receive a password reset link",
+    "sendResetLink": "Send Reset Link",
+    "resetEmailSent": "If the email exists, a reset link has been sent",
+    "checkYourInbox": "Check your inbox",
+    "resetLinkSentTo": "We've sent a password reset link to",
+    "didntReceiveEmail": "Didn't receive the email?",
+    "resendEmail": "Resend Email",
+    "resetPassword": "Reset Password",
+    "resetPasswordSubtitle": "Enter your new password below",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "resetPasswordSuccess": "Password has been reset successfully",
+    "resetPasswordSuccessDesc": "Your password has been updated. You can now sign in with your new password.",
+    "verifyingToken": "Verifying reset link...",
+    "invalidResetLink": "Invalid or expired reset link",
+    "invalidResetLinkDesc": "This password reset link is invalid or has expired. Please request a new one.",
+    "requestNewLink": "Request a new link",
+    "verifyingTokenDesc": "Please wait while we verify your reset link",
+    "rememberPassword": "Remember your password?",
+    "signInLink": "Sign in"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -90,7 +111,9 @@
     "bestCampaign": "Best Campaign",
     "recentActivity": "Recent Activity",
     "realTime": "Real-time",
-    "lastUpdated": "Last updated"
+    "lastUpdated": "Last updated",
+    "vsLastPeriod": "vs last period",
+    "trackingEvents": "Tracking Events"
   },
   "campaigns": {
     "title": "Campaigns",
@@ -128,7 +151,11 @@
     "deletedSuccess": "Campaign deleted successfully",
     "noCampaigns": "No campaigns yet. Create your first campaign!",
     "filterByStatus": "Filter by status",
-    "searchPlaceholder": "Search campaigns..."
+    "searchPlaceholder": "Search campaigns...",
+    "actions": "Actions",
+    "view": "View",
+    "edit": "Edit",
+    "landingPageBuilder": "Landing Page Builder"
   },
   "landingPage": {
     "builder": "Landing Page Builder",
@@ -256,7 +283,11 @@
     "activeVisitors": "Active Visitors",
     "topChannels": "Top Channels",
     "deviceBreakdown": "Device Breakdown",
-    "geoBreakdown": "Geographic Breakdown"
+    "geoBreakdown": "Geographic Breakdown",
+    "compareEnabled": "Compare Enabled",
+    "comparePeriod": "Compare with previous period",
+    "vsComparison": "vs comparison",
+    "compare": "Compare"
   },
   "settings": {
     "title": "Settings",
@@ -295,7 +326,9 @@
     "leaveWorkspace": "Leave Workspace",
     "confirmLeave": "Are you sure you want to leave this workspace?",
     "deleteWorkspace": "Delete Workspace",
-    "confirmDeleteWorkspace": "This action cannot be undone. All data will be permanently deleted."
+    "confirmDeleteWorkspace": "This action cannot be undone. All data will be permanently deleted.",
+    "dangerZone": "Danger Zone",
+    "deleteWorkspaceDesc": "This action cannot be undone. All data will be permanently deleted."
   },
   "auditLogs": {
     "title": "Audit Logs",

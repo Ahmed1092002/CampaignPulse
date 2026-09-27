@@ -1,26 +1,23 @@
-import prisma from '../../config/prisma';
-import { NotFoundError, AuthorizationError } from '../../utils/errors';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../types';
+import { paginationSchema } from '../../utils/validators';
 import { createAuditLog, getAuditLogs, AuditActions } from './auditLog.service';
+import { successResponse } from '../../utils/helpers';
+import { NotFoundError } from '../../utils/errors';
 
-export async function getAuditLogsHandler(workspaceId: string, userId: string, params: {
-  page?: number;
-  limit?: number;
-  entityType?: string;
-  entityId?: string;
-  userId?: string;
-  action?: string;
-  startDate?: Date;
-  endDate?: Date;
-}) {
-  const membership = await prisma.workspaceMember.findUnique({
-    where: { userId_workspaceId: { userId, workspaceId } },
+export async function getAuditLogsHandler(req: AuthenticatedRequest, res: Response) {
+  const { page, limit, entityType, entityId, userId, action, startDate, endDate } = req.query;
+  const result = await getAuditLogs(req.workspaceId!, {
+    page: page ? parseInt(page as string) : 1,
+    limit: limit ? parseInt(limit as string) : 20,
+    entityType: entityType as string,
+    entityId: entityId as string,
+    userId: userId as string,
+    action: action as string,
+    startDate: startDate ? new Date(startDate as string) : undefined,
+    endDate: endDate ? new Date(endDate as string) : undefined,
   });
-
-  if (!membership || membership.role !== 'ADMIN') {
-    throw new AuthorizationError('Only admins can view audit logs');
-  }
-
-  return getAuditLogs(workspaceId, params);
+  res.json(successResponse(result.data, result.meta));
 }
 
 export { AuditActions };

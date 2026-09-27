@@ -68,7 +68,28 @@
     "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صحيحة",
     "emailExists": "البريد الإلكتروني مسجل مسبقاً",
     "passwordMismatch": "كلمات المرور غير متطابقة",
-    "weakPassword": "كلمة المرور يجب أن تكون 8 أحرف على الأقل"
+    "weakPassword": "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+    "forgotPasswordTitle": "نسيت كلمة المرور",
+    "forgotPasswordSubtitle": "أدخل بريدك الإلكتروني لاستلام رابط إعادة تعيين كلمة المرور",
+    "sendResetLink": "إرسال رابط إعادة التعيين",
+    "resetEmailSent": "إذا كان البريد الإلكتروني موجوداً، تم إرسال رابط إعادة التعيين",
+    "checkYourInbox": "تحقق من بريدك الوارد",
+    "resetLinkSentTo": "لقد أرسلنا رابط إعادة تعيين كلمة المرور إلى",
+    "didntReceiveEmail": "لم تستلم البريد الإلكتروني؟",
+    "resendEmail": "إعادة إرسال البريد الإلكتروني",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "resetPasswordSubtitle": "أدخل كلمة المرور الجديدة أدناه",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+    "resetPasswordSuccess": "تم إعادة تعيين كلمة المرور بنجاح",
+    "resetPasswordSuccessDesc": "تم تحديث كلمة المرور الخاصة بك. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.",
+    "verifyingToken": "جاري التحقق من رابط إعادة التعيين...",
+    "invalidResetLink": "رابط إعادة التعيين غير صالح أو منتهي الصلاحية",
+    "invalidResetLinkDesc": "رابط إعادة تعيين كلمة المرور هذا غير صالح أو منتهي الصلاحية. يرجى طلب رابط جديد.",
+    "requestNewLink": "طلب رابط جديد",
+    "verifyingTokenDesc": "يرجى الانتظار بينما نتحقق من رابط إعادة التعيين الخاص بك",
+    "rememberPassword": "تذكرت كلمة المرور؟",
+    "signInLink": "تسجيل الدخول"
   },
   "dashboard": {
     "title": "لوحة التحكم",
@@ -90,7 +111,9 @@
     "bestCampaign": "أفضل حملة",
     "recentActivity": "النشاط الأخير",
     "realTime": "في الوقت الفعلي",
-    "lastUpdated": "آخر تحديث"
+    "lastUpdated": "آخر تحديث",
+    "vsLastPeriod": "مقابل الفترة السابقة",
+    "trackingEvents": "أحداث التتبع"
   },
   "campaigns": {
     "title": "الحملات",
@@ -128,7 +151,11 @@
     "deletedSuccess": "تم حذف الحملة بنجاح",
     "noCampaigns": "لا توجد حملات بعد. أنشئ حملتك الأولى!",
     "filterByStatus": "تصفية حسب الحالة",
-    "searchPlaceholder": "البحث في الحملات..."
+    "searchPlaceholder": "البحث في الحملات...",
+    "actions": "الإجراءات",
+    "view": "عرض",
+    "edit": "تعديل",
+    "landingPageBuilder": "منشئ صفحة الهبوط"
   },
   "landingPage": {
     "builder": "منشئ صفحة الهبوط",
@@ -256,7 +283,11 @@
     "activeVisitors": "الزوار النشطين",
     "topChannels": "أفضل القنوات",
     "deviceBreakdown": "تفصيل الأجهزة",
-    "geoBreakdown": "التوزيع الجغرافي"
+    "geoBreakdown": "التوزيع الجغرافي",
+    "compareEnabled": "المقارنة مفعلة",
+    "comparePeriod": "المقارنة مع الفترة السابقة",
+    "vsComparison": "مقابل المقارنة",
+    "compare": "مقارنة"
   },
   "settings": {
     "title": "الإعدادات",
@@ -295,7 +326,9 @@
     "leaveWorkspace": "مغادرة مساحة العمل",
     "confirmLeave": "هل أنت متأكد من مغادرة مساحة العمل؟",
     "deleteWorkspace": "حذف مساحة العمل",
-    "confirmDeleteWorkspace": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف جميع البيانات نهائياً."
+    "confirmDeleteWorkspace": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف جميع البيانات نهائياً.",
+    "dangerZone": "منطقة الخطر",
+    "deleteWorkspaceDesc": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف جميع البيانات نهائياً."
   },
   "auditLogs": {
     "title": "سجلات التدقيق",

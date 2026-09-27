@@ -1,9 +1,7 @@
 'use client';
 
-import { Fragment, ReactNode } from 'react';
-import { Portal } from '@/components/ui/Portal';
+import { HTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
-import { X } from 'lucide-react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -27,27 +25,25 @@ export function Modal({ isOpen, onClose, title, description, children, size = 'm
   };
 
   return (
-    <Portal>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby={title ? 'modal-title' : undefined} aria-describedby={description ? 'modal-description' : undefined}>
-        <div className="fixed inset-0 bg-black/50 animate-fade-in" onClick={onClose} aria-hidden="true" />
-        <div className={cn('relative w-full bg-background rounded-xl shadow-xl animate-scale-in', sizeClasses[size])}>
-          {(title || showClose) && (
-            <div className="flex items-start justify-between p-6 border-b">
-              <div>
-                {title && <h2 id="modal-title" className="text-lg font-semibold">{title}</h2>}
-                {description && <p id="modal-description" className="mt-1 text-sm text-muted-foreground">{description}</p>}
-              </div>
-              {showClose && (
-                <button onClick={onClose} className="p-1 rounded-lg hover:bg-accent transition-colors" aria-label="Close">
-                  <X className="h-5 w-5" />
-                </button>
-              )}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby={title ? 'modal-title' : undefined} aria-describedby={description ? 'modal-description' : undefined}>
+      <div className="fixed inset-0 bg-black/50 animate-fade-in" onClick={onClose} aria-hidden="true" />
+      <div className={cn('relative w-full bg-background rounded-xl shadow-xl animate-scale-in', sizeClasses[size])}>
+        {(title || showClose) && (
+          <div className="flex items-start justify-between p-6 border-b">
+            <div>
+              {title && <h2 id="modal-title" className="text-lg font-semibold">{title}</h2>}
+              {description && <p id="modal-description" className="mt-1 text-sm text-muted-foreground">{description}</p>}
             </div>
-          )}
-          <div className="p-6">{children}</div>
-        </div>
+            {showClose && (
+              <button onClick={onClose} className="p-1 rounded-lg hover:bg-accent transition-colors" aria-label="Close">
+                <X className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+        )}
+        <div className="p-6">{children}</div>
       </div>
-    </Portal>
+    </div>
   );
 }
 
