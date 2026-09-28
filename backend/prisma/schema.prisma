@@ -77,9 +77,13 @@ model Workspace {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  members     WorkspaceMember[]
-  campaigns   Campaign[]
-  auditLogs   AuditLog[]
+  members         WorkspaceMember[]
+  campaigns       Campaign[]
+  auditLogs       AuditLog[]
+  leads           Lead[]
+  trackingEvents  TrackingEvent[]
+  notifications   Notification[]
+  webhooks        Webhook[]
 
   @@index([slug])
 }
