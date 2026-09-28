@@ -165,9 +165,4 @@ export function ValidationEditor({ field, onUpdate }: ValidationEditorProps) {
       </CardContent>
     </Card>
   );
-
-  function handleChange(key: string, value: any) {
-    const newValidation = { ...validation, [key]: value };
-    onUpdate({ validation: newValidation });
-  }
 }

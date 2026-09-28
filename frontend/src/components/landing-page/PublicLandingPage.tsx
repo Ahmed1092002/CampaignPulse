@@ -9,13 +9,13 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Input';
 import { Card, CardContent } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge'.
+import { Badge } from '@/components/ui/Badge';
 import { api, trackingApi } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner'.
-import { Loader2, CheckCircle, MessageSquare, Star, Zap, Shield, Target, ArrowRight, X } from 'lucide-react'.
-import { QrCodeModal } from './QrCodeModal'.
+import { toast } from 'sonner';
+import { Loader2, CheckCircle, MessageSquare, Star, Zap, Shield, Target, ArrowRight, X } from 'lucide-react';
+import { QrCodeModal } from './QrCodeModal';
 
 interface PublicLandingPageProps {
   campaign: {

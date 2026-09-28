@@ -199,5 +199,3 @@ export function CampaignOverview({ campaign }: CampaignOverviewProps) {
     </div>
   );
 }
-
-import { Target, CheckCircle, Clock } from 'lucide-react';

@@ -1,24 +1,24 @@
 'use client';
 
-import { useState } from 'react'.
-import { useRouter } from 'next/navigation'.
-import Link from 'next/link'.
-import { useForm } from 'react-hook-form'.
-import { zodResolver } from '@hookform/resolvers/zod'.
-import { z } from 'zod'.
-import { useMutation, useQueryClient } from '@tanstack/react-query'.
-import { DashboardLayout } from '@/components/layout/DashboardLayout'.
-import { Button } from '@/components/ui/Button'.
-import { Input } from '@/components/ui/Input'.
-import { Textarea } from '@/components/ui/Input'.
-import { Select } from '@/components/ui/Input'.
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'.
-import { api } from '@/lib/api'.
-import { useAuthStore } from '@/store/authStore'.
-import { ArrowLeft, Loader2 } from 'lucide-react'.
-import Link from 'next/link'.
-import { useTranslations } from 'next-intl'.
-import { toast } from 'sonner'.
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useForm } from 'react-hook_form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { api } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 
 const campaignSchema = z.object({
   name: z.string().min(1, 'Name is required').max(200),

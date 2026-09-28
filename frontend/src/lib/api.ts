@@ -355,17 +355,3 @@ export const settingsApi = {
   update: (workspaceId: string, settings: Record<string, unknown>) => 
     api.patch(`/workspaces/${workspaceId}/settings`, settings),
 };
-
-// Audit Log API
-export const auditLogApi = {
-  getAll: (workspaceId: string, params?: {
-    page?: number;
-    limit?: number;
-    entityType?: string;
-    entityId?: string;
-    userId?: string;
-    action?: string;
-    startDate?: string;
-    endDate: string;
-  }) => api.get(`/workspaces/${workspaceId}/audit-logs`, params),
-};

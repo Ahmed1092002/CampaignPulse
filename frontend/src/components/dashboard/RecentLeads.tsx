@@ -22,7 +22,7 @@ interface Lead {
   createdAt: string;
 }
 
-export function RecentLeads() {
+export const RecentLeads = () => {
   const { workspaceId } = useAuthStore();
   const t = useTranslations('leads');
 
@@ -51,7 +51,7 @@ export function RecentLeads() {
                   <div className="h-3 bg-muted rounded w-1/2" />
                 </div>
               </div>
-            )}
+            ))}
           </div>
         ) : leads.length === 0 ? (
           <div className="p-6 text-center text-muted-foreground">
@@ -107,4 +107,4 @@ export function RecentLeads() {
       </CardContent>
     </Card>
   );
-}
+};

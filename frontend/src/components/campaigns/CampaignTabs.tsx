@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Badge, getStatusBadge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/DropdownMenu';
-import { MoreHorizontal, Trash2, Copy, ExternalLink, Edit } from 'lucide-react';
+import { MoreHorizontal, Trash2, Copy, ExternalLink, Edit, LayoutDashboard, Users, BarChart2, Target } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 
@@ -27,7 +27,7 @@ interface CampaignTabsProps {
   };
 }
 
-export function CampaignTabs({ campaign }: CampaignTabsProps) {
+export const CampaignTabs = ({ campaign }: CampaignTabsProps) => {
   const pathname = usePathname();
   const t = useTranslations('campaigns');
 
@@ -94,9 +94,10 @@ export function CampaignTabs({ campaign }: CampaignTabsProps) {
               {campaign.status === 'PUBLISHED' && (
                 <DropdownMenuItem onClick={() => {}} icon={<Trash2 className="h-4 w-4" />} className="text-orange-600">
                   {t('pause')}
-                </DropdownMenuItem)
+                </DropdownMenuItem>
               )}
-            </DropdownMenuContent          </DropdownMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button asChild variant="outline" size="sm">
             <Link href={`/campaigns/${campaign.id}/builder`}>
               <Edit className="h-4 w-4 mr-2" />
@@ -130,6 +131,4 @@ export function CampaignTabs({ campaign }: CampaignTabsProps) {
       </nav>
     </div>
   );
-}
-
-import { LayoutDashboard, Users, BarChart2, Target, Edit, ExternalLink, Copy, Trash2 } from 'lucide-react';
+};

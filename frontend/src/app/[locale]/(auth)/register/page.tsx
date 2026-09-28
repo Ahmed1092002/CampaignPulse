@@ -1,20 +1,20 @@
 'use client';
 
-import { useState } from 'react'.
-import { useRouter } from 'next/navigation'.
-import Link from 'next/link'.
-import { useForm } from 'react-hook-form'.
-import { zodResolver } from '@hookform/resolvers/zod'.
-import { z } from 'zod'.
-import { useMutation } from '@tanstack/react_query'.
-import { Button } from '@/components/ui/Button'.
-import { Input } from '@/components/ui/Input'.
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'.
-import { api } from '@/lib/api'.
-import { useAuthStore } from '@/store/authStore'.
-import { Loader2, Mail, Lock, User, AlertCircle } from 'lucide-react'.
-import { useTranslations } from 'next-intl'.
-import { toast } from 'sonner'.
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useMutation } from '@tanstack/react-query';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
+import { api } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
+import { Loader2, Mail, Lock, User, AlertCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 
 const registerSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(100),
@@ -39,14 +39,14 @@ export default function RegisterPage() {
     defaultValues: { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' },
   });
 
-  const registerMutation = useMutation({
+  const registerMutationOptions = {
     mutationFn: (data: RegisterFormData) => api.auth.register({
       email: data.email,
       password: data.password,
       firstName: data.firstName,
       lastName: data.lastName,
     }),
-    onSuccess: (response) => {
+    onSuccess: (response: any) => {
       const { user, tokens, workspaces } = response.data;
       setAuth({ user, accessToken: tokens.accessToken, refreshToken: tokens.refreshToken, workspaces });
       toast.success(t('registerSuccess'));
@@ -54,9 +54,16 @@ export default function RegisterPage() {
       router.refresh();
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.error?.message || t('error'));
+      toast.error(error.response?.data?.error?.message || t('error')),
     },
   };
+
+  const registerMutation = useMutation(registerMutationOptions);
+
+  const handleSubmit = (data: RegisterFormData) => {
+    registerMutation.mutate(data);
+  };
+  },
 
   const handleSubmit = (data: RegisterFormData) => {
     registerMutation.mutate(data);

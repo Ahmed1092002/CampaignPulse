@@ -105,6 +105,7 @@ export function DataTable<T>({
     }
   };
 
+  // Loading state
   if (isLoading) {
     return (
       <div className={cn('rounded-xl border bg-card', className)}>
@@ -136,6 +137,63 @@ export function DataTable<T>({
     );
   }
 
+  // Empty state
+  if (sortedData.length === 0) {
+    return (
+      <div className={cn('rounded-xl border bg-card', className)}>
+        <div className="overflow-x-auto">
+          <table className="w-full" role="grid">
+            <thead>
+              <tr className="border-b">
+                {columns.map((column) => (
+                  <th
+                    key={column.key}
+                    className={cn(
+                      'px-4 py-3 text-left text-sm font-medium text-muted-foreground',
+                      column.align && `text-${column.align}`,
+                      column.width && `w-[${column.width}]`,
+                      column.sortable && 'cursor-pointer select-none hover:bg-muted',
+                      column.className
+                    )}
+                    style={{ width: column.width }}
+                    onClick={() => column.sortable && handleSort(column.key)}
+                    aria-sort={sortConfig?.key === column.key ? (sortConfig.order === 'asc' ? 'ascending' : 'descending') : 'none'}
+                  >
+                    <div className="flex items-center gap-1">
+                      {column.header}
+                      {column.sortable && (
+                        <span className="inline-flex">
+                          {sortConfig?.key === column.key ? (
+                            sortConfig.order === 'asc' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                          ) : (
+                            <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                ))}
+                {rowActions && (
+                  <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">
+                    Actions
+                  </th>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan={columns.length + (selectable ? 1 : 0) + (rowActions ? 1 : 0)} className="px-4 py-8 text-center text-muted-foreground">
+                  {emptyMessage}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+  // Main render
   return (
     <div className={cn('rounded-xl border bg-card', className)}>
       <div className="overflow-x-auto">
@@ -188,46 +246,38 @@ export function DataTable<T>({
             </tr>
           </thead>
           <tbody>
-            {sortedData.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length + (selectable ? 1 : 0) + (rowActions ? 1 : 0)} className="px-4 py-8 text-center text-muted-foreground">
-                  {emptyMessage}
-                </td>
+            {sortedData.map((row, index) => (
+              <tr
+                key={keyExtractor(row)}
+                className={cn('border-b transition-colors', onRowClick && 'cursor-pointer hover:bg-muted/50', index % 2 === 0 ? 'bg-background' : 'bg-card')}
+                onClick={() => onRowClick?.(row)}
+              >
+                {selectable && (
+                  <td className="px-4 py-3">
+                    <Checkbox
+                      checked={isSelected(row)}
+                      onCheckedChange={() => handleSelectRow(row)}
+                      aria-label={`Select row ${index + 1}`}
+                    />
+                  </td>
+                )}
+                {columns.map((column) => (
+                  <td
+                    key={column.key}
+                    className={cn('px-4 py-3 text-sm', column.align && `text-${column.align}`, column.className)}
+                  >
+                    {column.render ? column.render(row, index) : String(row[column.key as keyof T] ?? '')}
+                  </td>
+                ))}
+                {rowActions && (
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {rowActions(row)}
+                    </div>
+                  </td>
+                )}
               </tr>
-            ) : (
-              sortedData.map((row, index) => (
-                <tr
-                  key={keyExtractor(row)}
-                  className={cn('border-b transition-colors', onRowClick && 'cursor-pointer hover:bg-muted/50', index % 2 === 0 ? 'bg-background' : 'bg-card')}
-                  onClick={() => onRowClick?.(row)}
-                >
-                  {selectable && (
-                    <td className="px-4 py-3">
-                      <Checkbox
-                        checked={isSelected(row)}
-                        onCheckedChange={() => handleSelectRow(row)}
-                        aria-label={`Select row ${index + 1}`}
-                      />
-                    </td>
-                  )}
-                  {columns.map((column) => (
-                    <td
-                      key={column.key}
-                      className={cn('px-4 py-3 text-sm', column.align && `text-${column.align}`, column.className)}
-                    >
-                      {column.render ? column.render(row, index) : String(row[column.key as keyof T] ?? '')}
-                    </td>
-                  ))}
-                  {rowActions && (
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {rowActions(row)}
-                      </div>
-                    </td>
-                  )}
-                </tr>
-              ))
-            )}
+            ))}
           </tbody>
         </table>
       </div>
@@ -261,5 +311,3 @@ export function DataTable<T>({
     </div>
   );
 }
-
-import { Checkbox } from './Checkbox';
