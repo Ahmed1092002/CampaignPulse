@@ -102,7 +102,7 @@ export default function AnalyticsPage() {
           <div className="grid gap-4 md:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Card key={i}><CardContent className="p-6 h-24 bg-muted" /></Card>
-            })}
+            ))}
           </div>
         </div>
       </DashboardLayout>

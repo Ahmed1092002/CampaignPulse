@@ -113,7 +113,7 @@ vi.mock('bullmq', () => {
     Worker: vi.fn().mockImplementation(() => ({
       on: vi.fn(),
     })),
-  });
+  };
 });
 
 vi.mock('socket.io', () => {

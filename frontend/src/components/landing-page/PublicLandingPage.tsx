@@ -197,7 +197,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
               {Hero.headline || t('hero.defaultHeadline', { campaignName: campaign.name })}
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              {Hero.subheadline || t('hero.defaultSubheadline)}
+              {Hero.subheadline || t('hero.defaultSubheadline')}
             </p>
             <Button 
               size="lg" 
@@ -208,7 +208,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
                 trackEvent('CTA_CLICK');
               }}
             >
-              {Hero.ctaText || t('hero.defaultCtaText)}
+              {Hero.ctaText || t('hero.defaultCtaText')}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
@@ -248,9 +248,9 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
               {Testimonials.map((testimonial, index) => (
                 <Card key={index} className="p-6">
                   <div className="flex items-center gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                    )}
+                    {[...Array(5)].map((_, i) => {
+                      return <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />;
+                    })}
                   </div>
                   <p className="text-muted-foreground mb-4 italic">"{testimonial.quote}"</p>
                   <div className="border-t pt-4">
@@ -280,7 +280,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
                 trackEvent('CTA_CLICK');
               }}
             >
-              {CTA.buttonText || t('cta.defaultButtonText)}
+              {CTA.buttonText || t('cta.defaultButtonText')}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
@@ -445,8 +445,7 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
               </Card>
             </div>
         </section>
-
-      {/* Footer */}
+        </div>
       <footer className="py-8 border-t bg-muted/30">
         <div className="container-app">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">

@@ -35,7 +35,7 @@ interface DataTableProps<T> {
     total: number;
     onPageChange: (page: number) => void;
     onPageSizeChange: (pageSize: number) => void;
-  };
+  }
   rowActions?: (row: T) => ReactNode;
   className?: string;
 }
@@ -71,7 +71,7 @@ export function DataTable<T>({
     }
     setSortConfig({ key, order });
     onSort?.(key, order);
-  };
+  }
 
   const sortedData = useMemo(() => {
     if (!sortConfig) return data;
@@ -94,7 +94,7 @@ export function DataTable<T>({
     } else {
       onSelectionChange?.(data.map(keyExtractor));
     }
-  };
+  }
 
   const handleSelectRow = (row: T) => {
     const key = keyExtractor(row);
@@ -103,7 +103,7 @@ export function DataTable<T>({
     } else {
       onSelectionChange?.([...selectedKeys, key]);
     }
-  };
+  }
 
   // Loading state
   if (isLoading) {
@@ -310,4 +310,4 @@ export function DataTable<T>({
       </div>
     </div>
   );
-}
+};

@@ -29,15 +29,23 @@ vi.mock('sonner', () => ({
   },
 }));
 
-// Mock lucide-react
+// Mock lucide-react - return simple string components
 vi.mock('lucide-react', () => {
   const icons = {};
-  const iconNames = ['Menu', 'X', 'ChevronDown', 'ChevronUp', 'ChevronLeft', 'ChevronRight', 'Plus', 'Minus', 'Search', 'Filter', 'MoreHorizontal', 'Edit', 'Trash2', 'Eye', 'ExternalLink', 'Copy', 'Download', 'Loader2', 'CheckCircle', 'AlertCircle', 'AlertTriangle', 'Info', 'Mail', 'Lock', 'User', 'UserPlus', 'Users', 'LogOut', 'Settings', 'Moon', 'Sun', 'Monitor', 'Globe', 'Bell', 'Zap', 'Target', 'LayoutDashboard', 'BarChart2', 'Sparkles', 'MessageSquare', 'MousePointerClick', 'UserPlus', 'Save', 'Eye', 'Globe', 'QrCode', 'Shield', 'Crown', 'ArrowRight', 'Calendar', 'DollarSign', 'Hash', 'TrendingUp', 'ArrowUpRight', 'Star', 'Image'];
-  
+  const iconNames = [
+    'Menu', 'X', 'ChevronDown', 'ChevronUp', 'ChevronLeft', 'ChevronRight',
+    'Plus', 'Minus', 'Search', 'Filter', 'MoreHorizontal', 'Edit', 'Trash2',
+    'Eye', 'ExternalLink', 'Copy', 'Download', 'Loader2', 'CheckCircle',
+    'AlertCircle', 'AlertTriangle', 'Info', 'Mail', 'Lock', 'User', 'UserPlus',
+    'Users', 'LogOut', 'Settings', 'Moon', 'Sun', 'Monitor', 'Globe', 'Bell',
+    'Zap', 'Target', 'LayoutDashboard', 'BarChart2', 'Sparkles', 'MessageSquare',
+    'MousePointerClick', 'UserPlus', 'Save', 'QrCode', 'Shield', 'Crown',
+    'ArrowRight', 'Calendar', 'DollarSign', 'Hash', 'TrendingUp', 'ArrowUpRight', 'Star', 'Image'
+  ];
+
   for (const name of iconNames) {
-    icons[name] = ({ className, ...props }: any) => (
-      <svg className={className} {...props} data-testid={`icon-${name.toLowerCase()}`} />
-    );
+    icons[name] = ({ className, ...props }: any) => 
+      `svg[data-testid="icon-${name.toLowerCase()}"]`;
   }
   return icons;
 });
@@ -51,20 +59,20 @@ vi.mock('cookies-next', () => ({
 
 // Mock recharts
 vi.mock('recharts', () => ({
-  LineChart: ({ children, ...props }: any) => <div data-testid="line-chart" {...props}>{children}</div>,
-  Line: ({ ...props }: any) => <div data-testid="line" {...props} />,
-  AreaChart: ({ children, ...props }: any) => <div data-testid="area-chart" {...props}>{children}</div>,
-  Area: ({ ...props }: any) => <div data-testid="area" {...props} />,
-  BarChart: ({ children, ...props }: any) => <div data-testid="bar-chart" {...props}>{children}</div>,
-  Bar: ({ ...props }: any) => <div data-testid="bar" {...props} />,
-  PieChart: ({ children, ...props }: any) => <div data-testid="pie-chart" {...props}>{children}</div>,
-  Pie: ({ ...props }: any) => <div data-testid="pie" {...props} />,
-  Cell: ({ ...props }: any) => <div data-testid="cell" {...props} />,
-  XAxis: ({ ...props }: any) => <div data-testid="x-axis" {...props} />,
-  YAxis: ({ ...props }: any) => <div data-testid="y-axis" {...props} />,
-  CartesianGrid: ({ ...props }: any) => <div data-testid="cartesian-grid" {...props} />,
-  Tooltip: ({ ...props }: any) => <div data-testid="tooltip" {...props} />,
-  ResponsiveContainer: ({ children, ...props }: any) => <div data-testid="responsive-container" {...props}>{children}</div>,
+  LineChart: ({ children, ...props }: any) => `div[data-testid="line-chart"]`,
+  Line: ({ ...props }: any) => `div[data-testid="line"]`,
+  AreaChart: ({ children, ...props }: any) => `div[data-testid="area-chart"]`,
+  Area: ({ ...props }: any) => `div[data-testid="area"]`,
+  BarChart: ({ children, ...props }: any) => `div[data-testid="bar-chart"]`,
+  Bar: ({ ...props }: any) => `div[data-testid="bar"]`,
+  PieChart: ({ children, ...props }: any) => `div[data-testid="pie-chart"]`,
+  Pie: ({ ...props }: any) => `div[data-testid="pie"]`,
+  Cell: ({ ...props }: any) => `div[data-testid="cell"]`,
+  XAxis: ({ ...props }: any) => `div[data-testid="x-axis"]`,
+  YAxis: ({ ...props }: any) => `div[data-testid="y-axis"]`,
+  CartesianGrid: ({ ...props }: any) => `div[data-testid="cartesian-grid"]`,
+  Tooltip: ({ ...props }: any) => `div[data-testid="tooltip"]`,
+  ResponsiveContainer: ({ children, ...props }: any) => `div[data-testid="responsive-container"]`,
 }));
 
 Object.defineProperty(global, 'IntersectionObserver', {
@@ -83,4 +91,4 @@ Object.defineProperty(global, 'ResizeObserver', {
     unobserve: vi.fn(),
     disconnect: vi.fn(),
   })),
-);
+});

@@ -54,16 +54,11 @@ export default function RegisterPage() {
       router.refresh();
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.error?.message || t('error')),
+      toast.error(error.response?.data?.error?.message || t('error'));
     },
   };
 
   const registerMutation = useMutation(registerMutationOptions);
-
-  const handleSubmit = (data: RegisterFormData) => {
-    registerMutation.mutate(data);
-  };
-  },
 
   const handleSubmit = (data: RegisterFormData) => {
     registerMutation.mutate(data);
@@ -83,47 +78,47 @@ export default function RegisterPage() {
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <Input
-                label={t('firstName)}
+                label={t('firstName')}
                 placeholder="John"
-                {...form.register('firstName)}
+                {...form.register('firstName')}
                 error={form.formState.errors.firstName?.message}
                 leftIcon={<User className="h-4 w-4" />}
               />
               <Input
-                label={t('lastName)}
+                label={t('lastName')}
                 placeholder="Doe"
-                {...form.register('lastName)}
+                {...form.register('lastName')}
                 error={form.formState.errors.lastName?.message}
                 leftIcon={<User className="h-4 w-4" />}
               />
             </div>
             <Input
-              label={t('email)}
+              label={t('email')}
               type="email"
               placeholder="you@example.com"
-              {...form.register('email)}
+              {...form.register('email')}
               error={form.formState.errors.email?.message}
               leftIcon={<Mail className="h-4 w-4" />}
             />
             <Input
-              label={t('password)}
+              label={t('password')}
               type="password"
               placeholder="••••••••"
-              {...form.register('password)}
+              {...form.register('password')}
               error={form.formState.errors.password?.message}
               leftIcon={<Lock className="h-4 w-4" />}
             />
             <Input
-              label={t('confirmPassword)}
+              label={t('confirmPassword')}
               type="password"
               placeholder="••••••••"
-              {...form.register('confirmPassword)}
+              {...form.register('confirmPassword')}
               error={form.formState.errors.confirmPassword?.message}
               leftIcon={<Lock className="h-4 w-4" />}
             />
             <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
               {registerMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {t('signUp)}
+              {t('signUp')}
             </Button>
           </form>
 
@@ -138,7 +133,7 @@ export default function RegisterPage() {
 
           <Button variant="outline" className="w-full" onClick={() => router.push('/login')}>
             <Mail className="h-4 w-4 mr-2" />
-            {t('hasAccount)} {t('signIn)}
+            {t('hasAccount')} {t('signIn')}
           </Button>
         </CardContent>
       </Card>

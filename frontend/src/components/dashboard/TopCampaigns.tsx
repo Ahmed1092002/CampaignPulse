@@ -54,6 +54,27 @@ export const TopCampaigns = () => {
     );
   }
 
+  const campaignItems = campaigns.slice(0, 5).map((campaign) => (
+    <div key={campaign.campaignId} className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+          <Target className="h-4 w-4 text-primary" />
+        </div>
+        <div>
+          <p className="font-medium truncate max-w-[200px]">{campaign.campaignName}</p>
+          <p className="text-sm text-muted-foreground">{t('leads')}: {formatNumber(campaign.count)}</p>
+        </div>
+      </div>
+      <div className="text-right">
+        <p className="font-semibold">{formatNumber(campaign.count)}</p>
+        <p className="text-xs text-green-600 flex items-center gap-1">
+          <TrendingUp className="h-3 w-3" />
+          +12%
+        </p>
+      </div>
+    </div>
+  ));
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -61,25 +82,7 @@ export const TopCampaigns = () => {
       </CardHeader>
       <CardContent className="p-0">
         <div className="space-y-4 p-4">
-          {campaigns.slice(0, 5).map((campaign, index) => (
-            <div key={campaign.campaignId} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Target className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p className="font-medium truncate max-w-[200px]">{campaign.campaignName}</p>
-                  <p className="text-sm text-muted-foreground">{t('leads')}: {formatNumber(campaign.count)}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold">{formatNumber(campaign.count)}</p>
-                <p className="text-xs text-green-600 flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3" />
-                  +12%
-                </p>
-              </div>
-            ))}
+          {campaignItems}
         </div>
       </CardContent>
     </Card>
