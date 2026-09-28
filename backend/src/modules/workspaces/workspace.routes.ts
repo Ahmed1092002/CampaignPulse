@@ -16,6 +16,6 @@ router.patch('/:id', requireWorkspace, requireAdmin, validate(workspaceControlle
 router.delete('/:id', requireWorkspace, requireAdmin, workspaceController.deleteWorkspace);
 
 router.get('/:id/settings', requireWorkspace, requireAdmin, workspaceController.getSettings);
-router.patch('/:id/settings', requireWorkspace, requireAdmin, workspaceController.updateSettings);
+router.patch('/:id/settings', requireWorkspace, requireAdmin, validate(workspaceController.workspaceValidators.updateSettings), workspaceController.updateSettings);
 
 export default router;

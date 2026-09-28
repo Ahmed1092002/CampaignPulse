@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { analyticsQuerySchema } from '../../utils/validators';
+import { analyticsQuerySchema, campaignAnalyticsParamsSchema } from '../../utils/validators';
 import * as analyticsService from './analytics.service';
 import { successResponse } from '../../utils/helpers';
 
@@ -38,4 +38,5 @@ export async function getRealtimeStats(req: AuthenticatedRequest, res: Response)
 
 export const analyticsValidators = {
   query: analyticsQuerySchema,
+  campaignParams: campaignAnalyticsParamsSchema,
 };

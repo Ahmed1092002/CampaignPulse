@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { paginationSchema } from '../../utils/validators';
+import { paginationSchema, auditLogQuerySchema } from '../../utils/validators';
 import { createAuditLog, getAuditLogs, AuditActions } from './auditLog.service';
 import { successResponse } from '../../utils/helpers';
 import { NotFoundError } from '../../utils/errors';
@@ -21,3 +21,7 @@ export async function getAuditLogsHandler(req: AuthenticatedRequest, res: Respon
 }
 
 export { AuditActions };
+
+export const auditLogValidators = {
+  list: auditLogQuerySchema,
+};

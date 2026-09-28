@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { landingPageSchema } from '../../utils/validators';
+import { landingPageSchema, duplicateLandingPageSchema } from '../../utils/validators';
 import * as landingPageService from './landingPage.service';
 import { successResponse } from '../../utils/helpers';
 
@@ -34,4 +34,5 @@ export async function duplicateLandingPage(req: AuthenticatedRequest, res: Respo
 
 export const landingPageValidators = {
   update: landingPageSchema,
+  duplicate: duplicateLandingPageSchema,
 };

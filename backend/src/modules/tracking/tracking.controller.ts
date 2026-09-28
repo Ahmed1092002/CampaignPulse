@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { trackingEventSchema } from '../../utils/validators';
+import { trackingEventSchema, trackingBatchSchema } from '../../utils/validators';
 import * as trackingService from './tracking.service';
 import { successResponse } from '../../utils/helpers';
 
@@ -45,9 +45,5 @@ export async function getEventCounts(req: AuthenticatedRequest, res: Response) {
 
 export const trackingValidators = {
   event: trackingEventSchema,
-  batch: {
-    body: {
-      events: { type: 'array', items: trackingEventSchema.shape.body },
-    },
-  },
+  batch: trackingBatchSchema,
 };

@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { paginationSchema } from '../../utils/validators';
+import { paginationSchema, updateUserSchema } from '../../utils/validators';
 import * as userService from './user.service';
 import { successResponse } from '../../utils/helpers';
 
@@ -31,4 +31,5 @@ export async function updateUser(req: AuthenticatedRequest, res: Response) {
 
 export const userValidators = {
   list: paginationSchema,
+  update: updateUserSchema,
 };

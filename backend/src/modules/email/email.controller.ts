@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
+import { emailTestSchema, emailCustomSchema } from '../../utils/validators';
 import { emailService } from './email.service';
 import { successResponse } from '../../utils/helpers';
 
@@ -56,18 +57,6 @@ export async function sendCustomEmail(req: AuthenticatedRequest, res: Response) 
 }
 
 export const emailValidators = {
-  test: {
-    body: {
-      to: { type: 'string', format: 'email' },
-      template: { type: 'string', optional: true },
-    },
-  },
-  custom: {
-    body: {
-      to: { type: 'string', format: 'email' },
-      subject: { type: 'string' },
-      html: { type: 'string', optional: true },
-      text: { type: 'string', optional: true },
-    },
-  },
+  test: emailTestSchema,
+  custom: emailCustomSchema,
 };

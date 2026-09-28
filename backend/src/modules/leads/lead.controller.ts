@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { createLeadSchema, updateLeadSchema, paginationSchema } from '../../utils/validators';
+import { createLeadSchema, updateLeadSchema, paginationSchema, createSourceParamsSchema } from '../../utils/validators';
 import * as leadService from './lead.service';
 import { successResponse } from '../../utils/helpers';
 
@@ -74,4 +74,6 @@ export const leadValidators = {
   create: createLeadSchema,
   update: updateLeadSchema,
   list: paginationSchema,
+  createSources: createSourceParamsSchema,
+  getSources: createSourceParamsSchema,
 };

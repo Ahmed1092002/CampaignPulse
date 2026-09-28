@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { loginSchema, registerSchema, refreshTokenSchema, changePasswordSchema, forgotPasswordSchema, resetPasswordSchema, verifyResetTokenSchema } from '../../utils/validators';
+import { loginSchema, registerSchema, refreshTokenSchema, changePasswordSchema, forgotPasswordSchema, resetPasswordSchema, verifyResetTokenSchema, updateProfileSchema } from '../../utils/validators';
 import * as authService from './auth.service';
 import { successResponse } from '../../utils/helpers';
 import { AuthenticationError } from '../../utils/errors';
@@ -79,4 +79,5 @@ export const authValidators = {
   forgotPassword: forgotPasswordSchema,
   resetPassword: resetPasswordSchema,
   verifyResetToken: verifyResetTokenSchema,
+  updateProfile: updateProfileSchema,
 };

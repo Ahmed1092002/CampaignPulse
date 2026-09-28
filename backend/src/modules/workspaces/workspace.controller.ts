@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { createWorkspaceSchema, updateWorkspaceSchema } from '../../utils/validators';
+import { createWorkspaceSchema, updateWorkspaceSchema, updateWorkspaceSettingsSchema } from '../../utils/validators';
 import * as workspaceService from './workspace.service';
 import { successResponse } from '../../utils/helpers';
 import { NotFoundError } from '../../utils/errors';
@@ -53,4 +53,5 @@ export async function updateSettings(req: AuthenticatedRequest, res: Response) {
 export const workspaceValidators = {
   create: createWorkspaceSchema,
   update: updateWorkspaceSchema,
+  updateSettings: updateWorkspaceSettingsSchema,
 };

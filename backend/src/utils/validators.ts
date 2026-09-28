@@ -199,3 +199,121 @@ export const verifyResetTokenSchema = z.object({
     token: z.string().min(1),
   }),
 });
+
+export const emailTestSchema = z.object({
+  body: z.object({
+    to: z.string().email(),
+    template: z.string().optional(),
+  }),
+});
+
+export const emailCustomSchema = z.object({
+  body: z.object({
+    to: z.string().email(),
+    subject: z.string().min(1).max(200),
+    html: z.string().optional(),
+    text: z.string().optional(),
+  }),
+});
+
+export const auditLogQuerySchema = z.object({
+  query: z.object({
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().positive().max(100).default(20),
+    entityType: z.string().optional(),
+    entityId: z.string().optional(),
+    userId: z.string().optional(),
+    action: z.string().optional(),
+    startDate: z.coerce.date().optional(),
+    endDate: z.coerce.date().optional(),
+  }),
+});
+
+export const trackingBatchSchema = z.object({
+  body: z.object({
+    events: z.array(trackingEventSchema.shape.body).min(1).max(100),
+  }),
+});
+
+export const webhookCreateSchema = z.object({
+  body: z.object({
+    url: z.string().url(),
+    events: z.array(z.string()).optional(),
+    secret: z.string().optional(),
+  }),
+  params: z.object({
+    workspaceId: z.string().uuid(),
+  }),
+});
+
+export const webhookDeleteSchema = z.object({
+  params: z.object({
+    workspaceId: z.string().uuid(),
+    id: z.string().uuid(),
+  }),
+});
+
+export const updateProfileSchema = z.object({
+  body: z.object({
+    firstName: z.string().min(1).max(100).optional(),
+    lastName: z.string().min(1).max(100).optional(),
+    locale: z.enum(['en', 'ar']).optional(),
+    avatarUrl: z.string().url().optional().nullable(),
+  }),
+});
+
+export const updateUserSchema = z.object({
+  body: z.object({
+    firstName: z.string().min(1).max(100).optional(),
+    lastName: z.string().min(1).max(100).optional(),
+    email: z.string().email().optional(),
+    avatarUrl: z.string().url().optional().nullable(),
+    locale: z.enum(['en', 'ar']).optional(),
+    isActive: z.boolean().optional(),
+  }),
+  params: z.object({
+    id: z.string().uuid(),
+  }),
+});
+
+export const updateWorkspaceSettingsSchema = z.object({
+  body: z.object({
+    settings: z.record(z.unknown()).optional(),
+  }),
+  params: z.object({
+    id: z.string().uuid(),
+  }),
+});
+
+export const createSourceParamsSchema = z.object({
+  params: z.object({
+    campaignId: z.string().uuid(),
+  }),
+});
+
+export const leaveWorkspaceSchema = z.object({
+  params: z.object({
+    workspaceId: z.string().uuid(),
+  }),
+});
+
+export const duplicateLandingPageSchema = z.object({
+  body: z.object({
+    targetCampaignId: z.string().uuid(),
+  }),
+  params: z.object({
+    campaignId: z.string().uuid(),
+  }),
+});
+
+export const campaignAnalyticsParamsSchema = z.object({
+  params: z.object({
+    id: z.string().uuid(),
+  }),
+  query: z.object({
+    startDate: z.coerce.date().optional(),
+    endDate: z.coerce.date().optional(),
+    groupBy: z.enum(['day', 'week', 'month']).default('day'),
+    channel: z.string().optional(),
+  }),
+});

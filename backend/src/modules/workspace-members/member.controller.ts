@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../types';
-import { inviteMemberSchema, updateMemberRoleSchema } from '../../utils/validators';
+import { inviteMemberSchema, updateMemberRoleSchema, leaveWorkspaceSchema } from '../../utils/validators';
 import * as memberService from './member.service';
 import { successResponse } from '../../utils/helpers';
 
@@ -39,4 +39,5 @@ export async function leaveWorkspace(req: AuthenticatedRequest, res: Response) {
 export const memberValidators = {
   invite: inviteMemberSchema,
   updateRole: updateMemberRoleSchema,
+  leave: leaveWorkspaceSchema,
 };

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../../config/prisma';
 import crypto from 'crypto';
+import { webhookCreateSchema } from '../../utils/validators';
 
 interface WebhookPayload {
   event: 'lead.created' | 'lead.updated' | 'lead.deleted';
@@ -136,4 +137,9 @@ export const deleteWebhook = async (req: Request, res: Response, next: NextFunct
   } catch (error) {
     next(error);
   }
+};
+
+export const webhookValidators = {
+  create: webhookCreateSchema,
+  delete: webhookDeleteSchema,
 };
