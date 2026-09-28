@@ -9,7 +9,7 @@ import { useUIStore } from '@/store/uiStore';
 import { Button } from '@/components/ui/Button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/DropdownMenu';
 import { Avatar } from '@/components/ui/Avatar';
-import { Logo } from './Logo';
+import { NotificationBell } from './NotificationBell';
 import { Menu, Bell, Moon, Sun, Monitor, Globe, LogOut, User, Settings, ChevronDown } from 'lucide-react';
 import { locales, localeNames, isRTL } from '@/lib/i18n/config';
 import { useTranslations } from 'next-intl';
@@ -81,29 +81,9 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="relative p-2 rounded-lg hover:bg-accent transition-colors" aria-label="Notifications">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-destructive text-[10px] font-medium text-destructive-foreground flex items-center justify-center">
-                  3
-                </span>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80">
-              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <div className="max-h-64 overflow-y-auto">
-                <div className="py-2 text-center text-muted-foreground text-sm">
-                  No new notifications
-                </div>
-              </div>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => {}}>View all notifications</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <NotificationBell />
 
-          <button
+            <button
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="p-2 rounded-lg hover:bg-accent transition-colors"
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}

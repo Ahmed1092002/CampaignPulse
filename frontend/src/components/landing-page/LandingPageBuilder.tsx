@@ -36,13 +36,31 @@ import {
   Settings,
   Shield,
   Code,
-  Layers
+  Layers,
+  Grip,
+  ArrowUpDown
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { ConditionalEditor } from './ConditionalEditor';
 import { ValidationEditor } from './ValidationEditor';
+import { 
+  DndContext, 
+  closestCenter, 
+  KeyboardSensor, 
+  PointerSensor, 
+  useSensor, 
+  useSensors, 
+  DragEndEvent 
+} from '@dnd-kit/core';
+import { 
+  arrayMove, 
+  SortableContext, 
+  sortableKeyboardCoordinates, 
+  verticalListSortingStrategy 
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface LandingPageBuilderProps {
   campaignId: string;
@@ -203,6 +221,7 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
   const [customCss, setCustomCss] = useState(campaign.landingPage?.customCss || '');
   const [isPublished, setIsPublished] = useState(campaign.landingPage?.isPublished || false);
   const [multiStep, setMultiStep] = useState(campaign.landingPage?.multiStep || false);
+  const [sectionOrder, setSectionOrder] = useState<string[]>(campaign.landingPage?.sectionOrder || ['hero', 'features', 'testimonials', 'cta', 'leadForm']);
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [showTemplates, setShowTemplates] = useState(false);
   const [expandedField, setExpandedField] = useState<string | null>(null);
@@ -227,7 +246,6 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
   });
 
   const handleSave = useCallback((publish = false) => {
-    const sectionOrder = ['hero', 'features', 'testimonials', 'cta', 'leadForm'];
     const data = {
       hero,
       features,
@@ -293,9 +311,36 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
   }, []);
 
   const moveSection = useCallback((section: string, direction: 'up' | 'down') => {
-    // This would reorder sections in sectionOrder
-    toast.info('Section reordering coming soon');
+    setSectionOrder(prev => {
+      const index = prev.indexOf(section);
+      if (index === -1) return prev;
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+      if (newIndex < 0 || newIndex >= prev.length) return prev;
+      return arrayMove(prev, index, newIndex);
+    });
   }, []);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setSectionOrder(prev => {
+        const oldIndex = prev.indexOf(active.id as string);
+        const newIndex = prev.indexOf(over.id as string);
+        return arrayMove(prev, oldIndex, newIndex);
+      });
+    }
+  };
 
   const tabs = [
     { id: 'hero', label: t('sections.hero'), icon: LayoutDashboard },
@@ -315,6 +360,54 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
       default: return { maxWidth: '100%', margin: 0 };
     }
   };
+
+  const sectionLabels: Record<string, string> = {
+    hero: 'Hero',
+    features: 'Features',
+    testimonials: 'Testimonials',
+    cta: 'CTA',
+    leadForm: 'Lead Form',
+  };
+
+  const sectionIcons: Record<string, any> = {
+    hero: LayoutDashboard,
+    features: Sparkles,
+    testimonials: MessageSquare,
+    cta: MousePointerClick,
+    leadForm: UserPlus,
+  };
+
+  function SectionReorder({ sectionOrder, onReorder, moveSection }: { sectionOrder: string[]; onReorder: (order: string[]) => void; moveSection: (section: string, direction: 'up' | 'down') => void }) {
+    return (
+      <div className="flex items-center gap-2 flex-wrap">
+        <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
+          <div className="flex items-center gap-2 flex-wrap">
+            {sectionOrder.map((sectionId, index) => {
+              const Icon = sectionIcons[sectionId] || LayoutDashboard;
+              return (
+                <div key={sectionId} className="flex items-center gap-1 p-1.5 bg-background border rounded-lg shadow-sm">
+                  <span className="text-xs text-muted-foreground">{index + 1}.</span>
+                  <div className="flex items-center gap-1 p-1.5 bg-muted rounded cursor-grab active:cursor-grabbing" style={{ touchAction: 'none' }}>
+                    <Grip className="h-4 w-4 text-muted-foreground" />
+                    <Icon className="h-4 w-4" />
+                    <span className="text-sm font-medium">{sectionLabels[sectionId] || sectionId}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => moveSection(sectionId, 'up')} disabled={index === 0} title="Move up">
+                      <ChevronUp className="h-3 w-3" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => moveSection(sectionId, 'down')} disabled={index === sectionOrder.length - 1} title="Move down">
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </SortableContext>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -387,14 +480,21 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
                 </Badge>
               )}
             </div>
-            <div className="text-sm text-muted-foreground">
-              Drag sections to reorder (coming soon)
-            </div>
+            <SectionReorder 
+              sectionOrder={sectionOrder} 
+              onReorder={setSectionOrder} 
+              moveSection={moveSection}
+            />
           </div>
         </CardContent>
       </Card>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -582,6 +682,7 @@ export function LandingPageBuilder({ campaignId, campaign }: LandingPageBuilderP
           </Card>
         </TabsContent>
       </Tabs>
+      </DndContext>
 
       {/* Templates Modal */}
       {showTemplates && (

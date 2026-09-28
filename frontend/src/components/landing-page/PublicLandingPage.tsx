@@ -32,6 +32,7 @@ interface PublicLandingPageProps {
     leadForm: any[];
     seo: any;
     customCss?: string;
+    multiStep?: boolean;
   };
   workspace: { id: string; name: string; logoUrl?: string };
   locale: string;
@@ -59,6 +60,27 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
   const [showQr, setShowQr] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  
+  // Multi-step form state
+  const multiStep = landingPage.multiStep || false;
+  const [currentStep, setCurrentStep] = useState(0);
+  const [stepData, setStepData] = useState<Record<string, any>>({});
+  
+  // Group fields by step for multi-step forms
+  const getStepFields = () => {
+    if (!multiStep || !landingPage.leadForm?.length) return [landingPage.leadForm || []];
+    
+    const fieldsPerStep = Math.ceil((landingPage.leadForm || []).length / 3) || 1;
+    const steps: any[][] = [];
+    for (let i = 0; i < (landingPage.leadForm || []).length; i += fieldsPerStep) {
+      steps.push((landingPage.leadForm || []).slice(i, i + fieldsPerStep));
+    }
+    return steps;
+  };
+  
+  const stepFields = getStepFields();
+  const totalSteps = stepFields.length;
+  const currentStepFields = stepFields[currentStep] || [];
 
   const form = useForm<LeadFormData>({
     resolver: zodResolver(leadFormSchema),
@@ -280,18 +302,38 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
                     <p className="text-muted-foreground">{t('leadForm.successMessage')}</p>
                     <Button 
                       className="mt-6" 
-                      onClick={() => { setFormSubmitted(false); form.reset(); }}
+                      onClick={() => { setFormSubmitted(false); form.reset(); setCurrentStep(0); setStepData({}); }}
                     >
                       {t('leadForm.submitAnother') || 'Submit Another'}
                     </Button>
                   </div>
                 ) : (
                   <>
+                    {multiStep && totalSteps > 1 && (
+                      <div className="mb-6 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          {Array.from({ length: totalSteps }).map((_, i) => (
+                            <div key={i} className="flex items-center">
+                              <div className={cn(
+                                'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors',
+                                i < currentStep ? 'bg-green-500 text-white' :
+                                i === currentStep ? 'bg-primary text-primary-foreground' :
+                                'bg-muted text-muted-foreground'
+                              )}>
+                                {i < currentStep ? <CheckCircle className="h-4 w-4" /> : i + 1}
+                              </div>
+                              {i < totalSteps - 1 && <div className={cn('w-12 h-0.5 mx-2', i < currentStep ? 'bg-green-500' : 'bg-muted')} />}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
                     <h2 className="text-2xl font-bold text-center mb-2">{t('leadForm.title')}</h2>
                     <p className="text-center text-muted-foreground mb-6">{t('leadForm.subtitle')}</p>
                     
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-                      {LeadForm.map((field, index) => (
+                      {currentStepFields.map((field, index) => (
                         <div key={`${field.name}-${index}`}>
                           <label htmlFor={field.name} className="label">
                             {field.label} {field.required && <span className="text-destructive">*</span>}
@@ -332,21 +374,71 @@ export function PublicLandingPage({ campaign, landingPage, workspace, locale, se
                         </div>
                       ))}
                       
-                      <Button 
-                        type="submit" 
-                        className="w-full mt-4" 
-                        size="lg"
-                        disabled={submitting}
-                      >
-                        {submitting ? (
-                          <>
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            {t('leadForm.submitting')}
-                          </>
-                        ) : (
-                          t('leadForm.submit')
-                        )}
-                      </Button>
+                      {multiStep && totalSteps > 1 && (
+                        <div className="flex items-center justify-between mt-6 pt-4 border-t">
+                          <Button 
+                            type="button"
+                            variant="outline"
+                            onClick={() => {
+                              setStepData(prev => ({ ...prev, ...form.getValues() }));
+                              setCurrentStep(prev => Math.max(0, prev - 1));
+                            }}
+                            disabled={currentStep === 0}
+                          >
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back
+                          </Button>
+                          
+                          {currentStep === totalSteps - 1 ? (
+                            <Button 
+                              type="submit" 
+                              className="w-full sm:w-auto" 
+                              size="lg"
+                              disabled={submitting}
+                            >
+                              {submitting ? (
+                                <>
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                  {t('leadForm.submitting')}
+                                </>
+                              ) : (
+                                t('leadForm.submit')
+                              )}
+                            </Button>
+                          ) : (
+                            <Button 
+                              type="button"
+                              onClick={() => {
+                                setStepData(prev => ({ ...prev, ...form.getValues() }));
+                                setCurrentStep(prev => Math.min(totalSteps - 1, prev + 1));
+                              }}
+                              className="w-full sm:w-auto"
+                              size="lg"
+                            >
+                              Next
+                              <ArrowRight className="h-4 w-4 ml-2" />
+                            </Button>
+                          )}
+                        </div>
+                      )}
+                      
+                      {!multiStep && (
+                        <Button 
+                          type="submit" 
+                          className="w-full mt-4" 
+                          size="lg"
+                          disabled={submitting}
+                        >
+                          {submitting ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              {t('leadForm.submitting')}
+                            </>
+                          ) : (
+                            t('leadForm.submit')
+                          )}
+                        </Button>
+                      )}
                     </form>
                   </>
                 )}
