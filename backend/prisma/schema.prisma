@@ -273,8 +273,9 @@ model AuditLog {
   userAgent     String?
   createdAt     DateTime @default(now())
 
-  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace     Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign      Campaign?   @relation(fields: [entityId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
   @@index([userId])
